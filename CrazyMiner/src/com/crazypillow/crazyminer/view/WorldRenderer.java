@@ -6,8 +6,10 @@ import com.crazypillow.crazyminer.model.Miner.State;
 import com.crazypillow.crazyminer.model.World;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -15,120 +17,138 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class WorldRenderer {
 
 	private static final float CAMERA_WIDTH = 10f;
 	private static final float CAMERA_HEIGHT = 7f;
-	private static final float RUNNING_FRAME_DURATION = 0.06f;
 	
 	private World world;
 	private OrthographicCamera cam;
 
-	/** for debug rendering **/
-	ShapeRenderer debugRenderer = new ShapeRenderer();
+	private Touchpad touchpad;
+    private TouchpadStyle touchpadStyle;
+    private Skin touchpadSkin;
+    private Drawable touchBackground;
+    private Drawable touchKnob;
+    
+    private Stage stage;
 
 	/** Textures **/
-	private TextureRegion bobIdleLeft;
-	private TextureRegion bobIdleRight;
+	private TextureRegion minerFrame;
+	private TextureRegion minerLeft;
+	private TextureRegion minerRight;
+	private TextureRegion minerUp;
+	private TextureRegion minerDown;
 	private TextureRegion blockTexture;
-	private TextureRegion bobFrame;
-	private TextureRegion bobJumpLeft;
-	private TextureRegion bobFallLeft;
-	private TextureRegion bobJumpRight;
-	private TextureRegion bobFallRight;
 	
-	/** Animations **/
-	private Animation walkLeftAnimation;
-	private Animation walkRightAnimation;
 	
 	private SpriteBatch spriteBatch;
-	private boolean debug = false;
 	private int width;
 	private int height;
-	private float ppuX;	// pixels per unit on the X axis
-	private float ppuY;	// pixels per unit on the Y axis
+	
+	Miner miner;
 	
 	public void setSize (int w, int h) {
 		this.width = w;
 		this.height = h;
-		ppuX = (float)width / CAMERA_WIDTH;
-		ppuY = (float)height / CAMERA_HEIGHT;
-	}
-	public boolean isDebug() {
-		return debug;
-	}
-	public void setDebug(boolean debug) {
-		this.debug = debug;
+		//this.cam.setToOrtho(false, width, height);
 	}
 
-	public WorldRenderer(World world, boolean debug) {
+	public WorldRenderer(World world) {
 		this.world = world;
+		this.miner = this.world.getMiner();
 		this.cam = new OrthographicCamera(CAMERA_WIDTH, CAMERA_HEIGHT);
+		this.cam.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
 		this.cam.position.set(CAMERA_WIDTH / 2f, CAMERA_HEIGHT / 2f, 0);
 		this.cam.update();
-		this.debug = debug;
 		spriteBatch = new SpriteBatch();
+		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, spriteBatch);
 		loadTextures();
 	}
 	
 	private void loadTextures() {
 		TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("images/textures/textures.pack"));
-		bobIdleLeft = atlas.findRegion("bob-01");
-		bobIdleRight = new TextureRegion(bobIdleLeft);
-		bobIdleRight.flip(true, false);
+		minerRight = atlas.findRegion("miner-right");
+		minerLeft = atlas.findRegion("miner-left");
+		minerUp = atlas.findRegion("miner-up");
+		minerDown = atlas.findRegion("miner-down");
 		blockTexture = atlas.findRegion("block");
-		TextureRegion[] walkLeftFrames = new TextureRegion[5];
-		for (int i = 0; i < 5; i++) {
-			walkLeftFrames[i] = atlas.findRegion("bob-0" + (i + 2));
-		}
-		walkLeftAnimation = new Animation(RUNNING_FRAME_DURATION, walkLeftFrames);
+		
+		//Create a touchpad skin    
+        touchpadSkin = new Skin();
+        //Set background image
+        touchpadSkin.add("touchBackground", new Texture("data/touchBackground.png"));
+        //Set knob image
+        touchpadSkin.add("touchKnob", new Texture("data/touchKnob.png"));
+        //Create TouchPad Style
+        touchpadStyle = new TouchpadStyle();
+        //Create Drawable's from TouchPad skin
+        touchBackground = touchpadSkin.getDrawable("touchBackground");
+        touchKnob = touchpadSkin.getDrawable("touchKnob");
+        //Apply the Drawables to the TouchPad Style
+        touchpadStyle.background = touchBackground;
+        touchpadStyle.knob = touchKnob;
+        //Create new TouchPad with the created style
+        touchpad = new Touchpad(10, touchpadStyle);
+        //setBounds(x,y,width,height)
+        touchpad.setBounds(15, 15, 64, 64);
+ 
+        //Create a Stage and add TouchPad
 
-		TextureRegion[] walkRightFrames = new TextureRegion[5];
-
-		for (int i = 0; i < 5; i++) {
-			walkRightFrames[i] = new TextureRegion(walkLeftFrames[i]);
-			walkRightFrames[i].flip(true, false);
-		}
-		walkRightAnimation = new Animation(RUNNING_FRAME_DURATION, walkRightFrames);
-		bobJumpLeft = atlas.findRegion("bob-up");
-		bobJumpRight = new TextureRegion(bobJumpLeft);
-		bobJumpRight.flip(true, false);
-		bobFallLeft = atlas.findRegion("bob-down");
-		bobFallRight = new TextureRegion(bobFallLeft);
-		bobFallRight.flip(true, false);
-	}
-	
-	
-	public void render() {
-		spriteBatch.begin();
-			drawBlocks();
-			drawBob();
-		spriteBatch.end();
+        stage.addActor(touchpad);            
+        Gdx.input.setInputProcessor(stage);
 		
 	}
+	
+	
+	public void render(float delta) {
+		stage.act(delta);
+		miner.setXPerc(touchpad.getKnobPercentX());
+		miner.setYPerc(touchpad.getKnobPercentY());
+		moveCamera(miner.getPosition().x, miner.getPosition().y);
+		cam.update();
+		spriteBatch.setProjectionMatrix(cam.combined);
+		spriteBatch.begin();
+			drawBlocks();
+			drawMiner();
+		spriteBatch.end();
+		stage.draw();
+	}
+	public void moveCamera(float x,float y){
+	        cam.position.set(x, y, 0);
+	        cam.update();
 
+	}
+	
+	
 
 	private void drawBlocks() {
 		for (Block block : world.getDrawableBlocks((int)CAMERA_WIDTH, (int)CAMERA_HEIGHT)) {
-			spriteBatch.draw(blockTexture, block.getPosition().x * ppuX, block.getPosition().y * ppuY, Block.SIZE * ppuX, Block.SIZE * ppuY);
+			spriteBatch.draw(blockTexture, block.getPosition().x, block.getPosition().y, Block.SIZE, Block.SIZE);
 		}
 	}
 
-	private void drawBob() {
-		Miner bob = world.getMiner();
-		bobFrame = bob.isFacingLeft() ? bobIdleLeft : bobIdleRight;
-		if(bob.getState().equals(State.WALKING)) {
-			bobFrame = bob.isFacingLeft() ? walkLeftAnimation.getKeyFrame(bob.getStateTime(), true) : walkRightAnimation.getKeyFrame(bob.getStateTime(), true);
-		} else if (bob.getState().equals(State.JUMPING)) {
-			if (bob.getVelocity().y > 0) {
-				bobFrame = bob.isFacingLeft() ? bobJumpLeft : bobJumpRight;
-			} else {
-				bobFrame = bob.isFacingLeft() ? bobFallLeft : bobFallRight;
-			}
+	private void drawMiner() {
+		minerFrame = minerLeft;
+		if(miner.getState().equals(State.LEFT)) {
+			minerFrame = minerLeft;
+		} else if (miner.getState().equals(State.RIGHT)) {
+			minerFrame = minerRight;
+		}else if (miner.getState().equals(State.UP)) {
+			minerFrame = minerUp;
+		}else if (miner.getState().equals(State.DOWN)) {
+			minerFrame = minerDown;
 		}
-		spriteBatch.draw(bobFrame, bob.getPosition().x * ppuX, bob.getPosition().y * ppuY, Miner.SIZE * ppuX, Miner.SIZE * ppuY);
+		spriteBatch.draw(minerFrame, miner.getPosition().x , miner.getPosition().y , Miner.SIZE , Miner.SIZE );
 	}
+
+	
 
 	
 	

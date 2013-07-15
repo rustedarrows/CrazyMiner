@@ -5,11 +5,13 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Miner {
 
+	private float xPerc, yPerc;
+	
 	public enum State {
-		IDLE, WALKING, JUMPING, DYING
+		IDLE, LEFT, RIGHT, UP, DOWN, MINING
 	}
 	
-	public static final float SIZE = 0.5f; // half a unit
+	public static final float SIZE = 0.75f; // half a unit
 
 	Vector2 	position = new Vector2();
 	Vector2 	acceleration = new Vector2();
@@ -27,7 +29,19 @@ public class Miner {
 		this.bounds.height = SIZE;
 		this.bounds.width = SIZE;
 	}
-
+	
+	public float getXPerc() {
+		return xPerc;
+	}
+	public float getYPerc() {
+		return yPerc;
+	}
+	public void setXPerc(float val) {
+		this.yPerc = val;
+	}
+	public void setYPerc(float val) {
+		this.xPerc = val;
+	}
 	
 	public boolean isFacingLeft() {
 		return facingLeft;

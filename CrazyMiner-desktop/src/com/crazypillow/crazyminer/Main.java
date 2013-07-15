@@ -8,8 +8,8 @@ public class Main {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "CrazyMiner";
 		cfg.useGL20 = false;
-		cfg.width = 480;
-		cfg.height = 320;
+		cfg.width = 480; //480
+		cfg.height = 320; //320
 		
 		new LwjglApplication(new CrazyMiner(), cfg);
 	}

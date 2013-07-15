@@ -14,22 +14,20 @@ import com.badlogic.gdx.utils.Pool;
 
 public class MinerController {
 
-	enum Keys {
-		LEFT, RIGHT, JUMP, FIRE
+	enum Dir {
+		X, Y
 	}
 
-	private static final long LONG_JUMP_PRESS 	= 150l;
 	private static final float ACCELERATION 	= 20f;
 	private static final float GRAVITY 			= -20f;
 	private static final float MAX_JUMP_SPEED	= 7f;
 	private static final float DAMP 			= 0.90f;
-	private static final float MAX_VEL 			= 4f;
+	private static final float MAX_VEL 			= 6f;
 	
 	private World 	world;
 	private Miner 	miner;
-	private long	jumpPressedTime;
-	private boolean jumpingPressed;
 	private boolean grounded = false;
+	
 
 	// This is the rectangle pool used in collision detection
 	// Good to avoid instantiation each frame
@@ -40,13 +38,6 @@ public class MinerController {
 		}
 	};
 	
-	static Map<Keys, Boolean> keys = new HashMap<MinerController.Keys, Boolean>();
-	static {
-		keys.put(Keys.LEFT, false);
-		keys.put(Keys.RIGHT, false);
-		keys.put(Keys.JUMP, false);
-		keys.put(Keys.FIRE, false);
-	};
 
 	// Blocks that Bob can collide with any given frame
 	private Array<Block> collidable = new Array<Block>();
@@ -56,40 +47,8 @@ public class MinerController {
 		this.miner = world.getMiner();
 	}
 
-	// ** Key presses and touches **************** //
+
 	
-	public void leftPressed() {
-		keys.get(keys.put(Keys.LEFT, true));
-	}
-	
-	public void rightPressed() {
-		keys.get(keys.put(Keys.RIGHT, true));
-	}
-	
-	public void jumpPressed() {
-		keys.get(keys.put(Keys.JUMP, true));
-	}
-	
-	public void firePressed() {
-		keys.get(keys.put(Keys.FIRE, false));
-	}
-	
-	public void leftReleased() {
-		keys.get(keys.put(Keys.LEFT, false));
-	}
-	
-	public void rightReleased() {
-		keys.get(keys.put(Keys.RIGHT, false));
-	}
-	
-	public void jumpReleased() {
-		keys.get(keys.put(Keys.JUMP, false));
-		jumpingPressed = false;
-	}
-	
-	public void fireReleased() {
-		keys.get(keys.put(Keys.FIRE, false));
-	}
 	
 	/** The main update method **/
 	public void update(float delta) {
@@ -97,9 +56,6 @@ public class MinerController {
 		processInput();
 		
 		// If Bob is grounded then reset the state to IDLE 
-		if (grounded && miner.getState().equals(State.JUMPING)) {
-			miner.setState(State.IDLE);
-		}
 		
 		// Setting initial vertical acceleration 
 		miner.getAcceleration().y = GRAVITY;
@@ -222,46 +178,39 @@ public class MinerController {
 		}
 	}
 
-	/** Change Bob's state and parameters based on input controls **/
+	
 	private boolean processInput() {
-		if (keys.get(Keys.JUMP)) {
-			if (!miner.getState().equals(State.JUMPING)) {
-				jumpingPressed = true;
-				jumpPressedTime = System.currentTimeMillis();
-				miner.setState(State.JUMPING);
-				miner.getVelocity().y = MAX_JUMP_SPEED; 
-				grounded = false;
-			} else {
-				if (jumpingPressed && ((System.currentTimeMillis() - jumpPressedTime) >= LONG_JUMP_PRESS)) {
-					jumpingPressed = false;
-				} else {
-					if (jumpingPressed) {
-						miner.getVelocity().y = MAX_JUMP_SPEED;
-					}
-				}
+		float y = miner.getYPerc();
+		float x = miner.getXPerc();
+		
+		if(y > 0) {
+			miner.setState(State.RIGHT);
+			if(x< 0) {
+				miner.setState(State.DOWN);
+				miner.getVelocity().y = MAX_JUMP_SPEED*x;
+			}else if(x > 0) {
+				miner.setState(State.UP);
+				miner.getVelocity().y = MAX_JUMP_SPEED*x;
+			}else {
+				miner.setState(State.RIGHT);
 			}
+			miner.getAcceleration().x = ACCELERATION*y;
 		}
-		if (keys.get(Keys.LEFT)) {
-			// left is pressed
-			miner.setFacingLeft(true);
-			if (!miner.getState().equals(State.JUMPING)) {
-				miner.setState(State.WALKING);
+		if(y < 0) {
+			miner.setState(State.LEFT);
+			if(x < 0) {
+				miner.setState(State.DOWN);
+				miner.getVelocity().y = MAX_JUMP_SPEED*x;
+			}else if(x > 0) {
+				miner.setState(State.UP);
+				miner.getVelocity().y = MAX_JUMP_SPEED*x;
+			}else {
+				
 			}
-			miner.getAcceleration().x = -ACCELERATION;
-		} else if (keys.get(Keys.RIGHT)) {
-			// left is pressed
-			miner.setFacingLeft(false);
-			if (!miner.getState().equals(State.JUMPING)) {
-				miner.setState(State.WALKING);
-			}
-			miner.getAcceleration().x = ACCELERATION;
-		} else {
-			if (!miner.getState().equals(State.JUMPING)) {
-				miner.setState(State.IDLE);
-			}
-			miner.getAcceleration().x = 0;
-			
+			miner.getAcceleration().x = ACCELERATION*y;
 		}
+		
+		
 		return false;
 	}
 
