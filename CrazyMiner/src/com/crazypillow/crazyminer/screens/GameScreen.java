@@ -63,6 +63,7 @@ public class GameScreen implements Screen {
 	@Override
 	public void dispose() {
 		Gdx.input.setInputProcessor(null);
+		world.save();
 	}
 
 	

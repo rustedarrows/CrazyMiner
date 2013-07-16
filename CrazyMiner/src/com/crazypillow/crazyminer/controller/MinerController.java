@@ -17,7 +17,9 @@ public class MinerController {
 	enum Dir {
 		X, Y
 	}
-
+	
+	private static final float MINE_TIME 		= 300l; //Time between mining attempts
+	private static final float MINING_TIME 		= 300l; //Time to mine
 	private static final float ACCELERATION 	= 20f;
 	private static final float GRAVITY 			= -20f;
 	private static final float MAX_JUMP_SPEED	= 7f;
@@ -27,6 +29,11 @@ public class MinerController {
 	private World 	world;
 	private Miner 	miner;
 	private boolean grounded = false;
+	private long lastMinedTime;
+	private long startMineTime;
+	private boolean canMine = true;
+	
+	float yPerc, xPerc;
 	
 
 	// This is the rectangle pool used in collision detection
@@ -113,21 +120,40 @@ public class MinerController {
 		// simulate bob's movement on the X
 		minerRect.x += miner.getVelocity().x;
 		
-		// clear collision boxes in world
-		world.getCollisionRects().clear();
 		
 		// if bob collides, make his horizontal velocity 0
 		for (Block block : collidable) {
 			if (block == null) continue;
 			if (minerRect.overlaps(block.getBounds())) {
+				if(miner.getState().equals(State.IDLE)) {
+					
+				}else if(miner.getState().equals(State.MINING)) { 
+					if(System.currentTimeMillis() - startMineTime >= MINING_TIME) {
+						miner.setState(State.IDLE);
+					}
+				}else {
+					if(System.currentTimeMillis() - lastMinedTime >= MINE_TIME || canMine == true) {
+						canMine = true;
+					}
+					if(canMine){
+						world.setNull((int)block.getBounds().x, (int)block.getBounds().y);
+						block.mine(true);
+						lastMinedTime = System.currentTimeMillis();
+						canMine = false;
+						miner.setState(State.MINING);
+						startMineTime = System.currentTimeMillis();
+								
+					}
+				}
 				miner.getVelocity().x = 0;
-				world.getCollisionRects().add(block.getBounds());
 				break;
 			}
 		}
 
 		// reset the x position of the collision box
 		minerRect.x = miner.getPosition().x;
+		
+		//---------------------Y AXIS COLLISION DETECTION
 		
 		// the same thing but on the vertical Y axis
 		startX = (int) miner.getBounds().x;
@@ -145,6 +171,27 @@ public class MinerController {
 		for (Block block : collidable) {
 			if (block == null) continue;
 			if (minerRect.overlaps(block.getBounds())) {
+				if(miner.getVelocity().y < 0) {
+					if(miner.getState().equals(State.IDLE)) {
+					
+					}else if(miner.getState().equals(State.MINING)) { 
+						if(System.currentTimeMillis() - startMineTime >= MINING_TIME) {
+							miner.setState(State.IDLE);
+						}
+					}else {
+						if(System.currentTimeMillis() - lastMinedTime >= MINE_TIME || canMine) {
+							canMine = true;
+						}
+						if(canMine){
+							world.setNull((int)block.getBounds().x, (int)block.getBounds().y);
+							block.mine(true);
+							lastMinedTime = System.currentTimeMillis();
+							canMine = false;
+							miner.setState(State.MINING);
+							startMineTime = System.currentTimeMillis();
+						}
+					}
+				}	
 				if (miner.getVelocity().y < 0) {
 					grounded = true;
 				}
@@ -180,39 +227,42 @@ public class MinerController {
 
 	
 	private boolean processInput() {
-		float y = miner.getYPerc();
-		float x = miner.getXPerc();
-		if(y == 0 && x == 0) {
-			miner.setState(State.LEFT);
-		}
-		if(y > 0) {
-			miner.setState(State.RIGHT);
-			if(x< 0) {
-				miner.setState(State.DOWN);
-				miner.getVelocity().y = MAX_JUMP_SPEED*x;
-			}else if(x > 0) {
-				miner.setState(State.UP);
-				miner.getVelocity().y = MAX_JUMP_SPEED*x;
-			}else {
+		yPerc = miner.getYPerc();
+		xPerc = miner.getXPerc();
+		if(miner.getState().equals(State.MINING)) {
+			//Do nothing until mining is done
+		}else {
+			if(yPerc == 0 && xPerc == 0) {
+				miner.setState(State.IDLE);
+			}
+			if(yPerc > 0) {
 				miner.setState(State.RIGHT);
-			}
+				if(xPerc< 0) {
+					miner.setState(State.DOWN);
+					miner.getVelocity().y = MAX_JUMP_SPEED*xPerc;
+				}else if(xPerc > 0) {
+					miner.setState(State.UP);
+					miner.getVelocity().y = MAX_JUMP_SPEED*xPerc;
+				}else {
+					miner.setState(State.RIGHT);
+				}
 			
-			miner.getAcceleration().x = ACCELERATION*y;
-		}
-		if(y < 0) {
-			miner.setState(State.LEFT);
-			if(x < 0) {
-				miner.setState(State.DOWN);
-				miner.getVelocity().y = MAX_JUMP_SPEED*x;
-			}else if(x > 0) {
-				miner.setState(State.UP);
-				miner.getVelocity().y = MAX_JUMP_SPEED*x;
-			}else {
-				
+				miner.getAcceleration().x = ACCELERATION*yPerc;
 			}
-			miner.getAcceleration().x = ACCELERATION*y;
+			if(yPerc < 0) {
+				miner.setState(State.LEFT);
+				if(xPerc < 0) {
+					miner.setState(State.DOWN);
+					miner.getVelocity().y = MAX_JUMP_SPEED*xPerc;
+				}else if(xPerc > 0) {
+					miner.setState(State.UP);
+					miner.getVelocity().y = MAX_JUMP_SPEED*xPerc;
+				}else {
+					
+				}
+				miner.getAcceleration().x = ACCELERATION*yPerc;
+			}
 		}
-		
 		
 		return false;
 	}

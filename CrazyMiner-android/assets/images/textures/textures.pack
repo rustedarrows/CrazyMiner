@@ -3,38 +3,52 @@ textures.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-block
+block-diamond
   rotate: false
   xy: 1, 1
-  size: 48, 48
-  orig: 48, 48
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+block-gold
+  rotate: false
+  xy: 35, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+block
+  rotate: false
+  xy: 69, 1
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1
 miner-down
   rotate: false
-  xy: 51, 1
-  size: 48, 48
-  orig: 48, 48
+  xy: 103, 1
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1
 miner-left
   rotate: false
-  xy: 101, 1
-  size: 48, 48
-  orig: 48, 48
+  xy: 137, 1
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1
 miner-right
   rotate: false
-  xy: 151, 1
-  size: 48, 48
-  orig: 48, 48
+  xy: 171, 1
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1
 miner-up
   rotate: false
-  xy: 201, 1
-  size: 48, 48
-  orig: 48, 48
+  xy: 205, 1
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1

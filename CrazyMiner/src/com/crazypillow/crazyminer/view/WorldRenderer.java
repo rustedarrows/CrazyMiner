@@ -95,7 +95,7 @@ public class WorldRenderer {
         touchpadStyle.background = touchBackground;
         touchpadStyle.knob = touchKnob;
         //Create new TouchPad with the created style
-        touchpad = new Touchpad(10, touchpadStyle);
+        touchpad = new Touchpad(5, touchpadStyle);
         //setBounds(x,y,width,height)
         touchpad.setBounds(15, 15, 128, 128);
  
@@ -130,7 +130,7 @@ public class WorldRenderer {
 
 	private void drawBlocks() {
 		for (Block block : world.getDrawableBlocks((int)CAMERA_WIDTH, (int)CAMERA_HEIGHT)) {
-			spriteBatch.draw(blockTexture, block.getPosition().x, block.getPosition().y, Block.SIZE, Block.SIZE);
+				spriteBatch.draw(blockTexture, block.getPosition().x, block.getPosition().y, Block.SIZE, Block.SIZE);
 		}
 	}
 

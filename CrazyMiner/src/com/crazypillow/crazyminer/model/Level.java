@@ -39,14 +39,22 @@ public class Level {
 	public Block get(int x, int y) {
 		return blocks[x][y];
 	}
+	public void setNull(int x, int y) {
+		blocks[x][y] = null;
+	}
 
 	private void loadDemoLevel() {
-		width = 10;
-		height = 7;
+		width = 50;
+		height = 25;
 		blocks = new Block[width][height];
 		
 		
-		for (int col = 0; col < width; col++) {
+		for(int col = 0; col < width; col++) {
+			for(int row = 0; row < height; row++) {
+				blocks[col][row] = new Block(new Vector2(col, row));
+			}
+		}
+		/*for (int col = 0; col < width; col++) {
 			for (int row = 0; row < height; row++) {
 				blocks[col][row] = null;
 			}
@@ -67,7 +75,7 @@ public class Level {
 		blocks[6][3] = new Block(new Vector2(6, 3));
 		blocks[6][4] = new Block(new Vector2(6, 4));
 		blocks[6][5] = new Block(new Vector2(6, 5));
-		
+		*/
 		
 	}
 }

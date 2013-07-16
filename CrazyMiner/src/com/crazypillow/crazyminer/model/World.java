@@ -28,7 +28,11 @@ public class World {
 	public Level getLevel() {
 		return level;
 	}
-	/** Return only the blocks that need to be drawn **/
+	/** Return only the blocks that need to be drawn 
+	 * @author Tim Christensen
+	 * @return the blocks that should be drawn
+	 * @param width of the viewport, height of the viewport
+	 * **/
 	public List<Block> getDrawableBlocks(int width, int height) {
 		int x = (int)miner.getPosition().x;
 		int y = (int)miner.getPosition().y;
@@ -37,7 +41,6 @@ public class World {
 		int highX = x + width;
 		int lowY = y - height;
 		int highY = y + height;
-		System.out.println(lowX + " : " + highX + " : " + lowY + " : " + highY);
 		
 		List<Block> blocks = new ArrayList<Block>();
 		Block block;
@@ -50,7 +53,6 @@ public class World {
 				}else {
 					block = level.getBlocks()[col][row];
 					if (block != null) {
-						System.out.println("added " + col + " : " + row);
 						blocks.add(block);
 					}
 				}
@@ -65,7 +67,17 @@ public class World {
 	}
 
 	private void createDemoWorld() {
-		miner = new Miner(new Vector2(7, 2));
+		miner = new Miner(new Vector2(10, 25));
 		level = new Level();
+	}
+	public void setNull(int x, int y) {
+		level.setNull(x, y);
+	}
+	/*
+	 * Saves map to file
+	 * 
+	 */
+	public void save() {
+		
 	}
 }
