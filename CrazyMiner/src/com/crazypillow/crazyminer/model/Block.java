@@ -9,6 +9,7 @@ public class Block {
 	
 	Vector2 	position = new Vector2();
 	Rectangle 	bounds = new Rectangle();
+	private boolean mined;
 	
 	public Block(Vector2 pos) {
 		this.position = pos;
@@ -24,5 +25,11 @@ public class Block {
 
 	public Rectangle getBounds() {
 		return bounds;
+	}
+	public void mine(boolean val) {
+		this.mined = val;
+	}
+	public boolean getMinded() {
+		return mined;
 	}
 }

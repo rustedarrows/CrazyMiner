@@ -14,7 +14,7 @@ public class CrazyMinerActivity extends AndroidApplication {
         cfg.useAccelerometer = false;
         cfg.useCompass = false;
         cfg.useWakelock = true;
-        cfg.useGL20 = true;
+        cfg.useGL20 = false;
         
         initialize(new CrazyMiner(), cfg);
     }

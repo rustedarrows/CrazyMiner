@@ -149,10 +149,10 @@ public class MinerController {
 					grounded = true;
 				}
 				miner.getVelocity().y = 0;
-				world.getCollisionRects().add(block.getBounds());
 				break;
 			}
 		}
+		
 		// reset the collision box's position on Y
 		minerRect.y = miner.getPosition().y;
 		
@@ -182,7 +182,9 @@ public class MinerController {
 	private boolean processInput() {
 		float y = miner.getYPerc();
 		float x = miner.getXPerc();
-		
+		if(y == 0 && x == 0) {
+			miner.setState(State.LEFT);
+		}
 		if(y > 0) {
 			miner.setState(State.RIGHT);
 			if(x< 0) {
@@ -194,6 +196,7 @@ public class MinerController {
 			}else {
 				miner.setState(State.RIGHT);
 			}
+			
 			miner.getAcceleration().x = ACCELERATION*y;
 		}
 		if(y < 0) {

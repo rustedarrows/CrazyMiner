@@ -97,7 +97,7 @@ public class WorldRenderer {
         //Create new TouchPad with the created style
         touchpad = new Touchpad(10, touchpadStyle);
         //setBounds(x,y,width,height)
-        touchpad.setBounds(15, 15, 64, 64);
+        touchpad.setBounds(15, 15, 128, 128);
  
         //Create a Stage and add TouchPad
 
@@ -136,7 +136,7 @@ public class WorldRenderer {
 
 	private void drawMiner() {
 		minerFrame = minerLeft;
-		if(miner.getState().equals(State.LEFT)) {
+		if(miner.getState().equals(State.LEFT) || miner.getState().equals(State.IDLE)) {
 			minerFrame = minerLeft;
 		} else if (miner.getState().equals(State.RIGHT)) {
 			minerFrame = minerRight;
