@@ -10,7 +10,8 @@ public class Block {
 	Vector2 	position = new Vector2();
 	Rectangle 	bounds = new Rectangle();
 	private boolean mined;
-	private int touch;
+	private int touch; //number of times it has been touched by the miner
+	private int durability; //Number of touches it needs to break
 	
 	public Block(Vector2 pos) {
 		this.position = pos;
@@ -18,6 +19,14 @@ public class Block {
 		this.bounds.setY(pos.y);
 		this.bounds.width = SIZE;
 		this.bounds.height = SIZE;
+	}
+	public Block(Vector2 pos, int durability) {
+		this.position = pos;
+		this.bounds.setX(pos.x);
+		this.bounds.setY(pos.y);
+		this.bounds.width = SIZE;
+		this.bounds.height = SIZE;
+		this.durability = durability;
 	}
 
 	public Vector2 getPosition() {
@@ -38,5 +47,11 @@ public class Block {
 	}
 	public int getTouch() {
 		return touch;
+	}
+	public void setDurability(int durability) {
+		this.durability = durability;
+	}
+	public int getDurability() {
+		return durability;
 	}
 }
