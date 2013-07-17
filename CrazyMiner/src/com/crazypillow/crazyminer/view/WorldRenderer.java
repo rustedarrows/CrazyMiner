@@ -136,7 +136,7 @@ public class WorldRenderer {
 
 	private void drawMiner() {
 		minerFrame = minerLeft;
-		if(miner.getState().equals(State.LEFT) || miner.getState().equals(State.IDLE)) {
+		/*if(miner.getState().equals(State.LEFT) || miner.getState().equals(State.IDLE)) {
 			minerFrame = minerLeft;
 		} else if (miner.getState().equals(State.RIGHT)) {
 			minerFrame = minerRight;
@@ -144,7 +144,23 @@ public class WorldRenderer {
 			minerFrame = minerUp;
 		}else if (miner.getState().equals(State.DOWN)) {
 			minerFrame = minerDown;
+		}*/
+		float x = miner.getXPerc();
+		float y = miner.getYPerc();
+		if(x == 0 && y == 0) {
+			minerFrame = minerRight;
 		}
+		if(y > 0) {
+			minerFrame = minerRight;
+		}else {
+			minerFrame = minerLeft;
+		}
+		if(x > 0.20) {
+			minerFrame = minerUp;
+		}else if(x < -0.20) {
+			minerFrame = minerDown;
+		}
+		
 		spriteBatch.draw(minerFrame, miner.getPosition().x , miner.getPosition().y , Miner.SIZE , Miner.SIZE );
 	}
 

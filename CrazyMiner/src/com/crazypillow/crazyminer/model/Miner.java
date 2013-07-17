@@ -8,8 +8,9 @@ public class Miner {
 	private float xPerc, yPerc;
 	
 	public enum State {
-		IDLE, LEFT, RIGHT, UP, DOWN, MINING
+		IDLE, MOVING, MINING
 	}
+	
 	
 	public static final float SIZE = 0.75f; // half a unit
 
@@ -17,7 +18,7 @@ public class Miner {
 	Vector2 	acceleration = new Vector2();
 	Vector2 	velocity = new Vector2();
 	Rectangle 	bounds = new Rectangle();
-	State		state = State.IDLE;
+	State		state = State.IDLE; 
 	boolean		facingLeft = true;
 	float		stateTime = 0;
 	boolean		longJump = false;
@@ -74,6 +75,7 @@ public class Miner {
 	public void setState(State newState) {
 		this.state = newState;
 	}
+	
 
 	public float getStateTime() {
 		return stateTime;

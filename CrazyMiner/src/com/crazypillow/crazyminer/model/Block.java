@@ -10,6 +10,7 @@ public class Block {
 	Vector2 	position = new Vector2();
 	Rectangle 	bounds = new Rectangle();
 	private boolean mined;
+	private int touch;
 	
 	public Block(Vector2 pos) {
 		this.position = pos;
@@ -31,5 +32,11 @@ public class Block {
 	}
 	public boolean getMinded() {
 		return mined;
+	}
+	public void touch() {
+		touch++;
+	}
+	public int getTouch() {
+		return touch;
 	}
 }

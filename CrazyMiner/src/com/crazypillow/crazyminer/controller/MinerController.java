@@ -19,7 +19,7 @@ public class MinerController {
 	}
 	
 	private static final float MINE_TIME 		= 300l; //Time between mining attempts
-	private static final float MINING_TIME 		= 300l; //Time to mine
+	private static final float TIME_TO_MINE		= 300l; //Time to mine, must be intersecting for that long before counts as mined
 	private static final float ACCELERATION 	= 20f;
 	private static final float GRAVITY 			= -20f;
 	private static final float MAX_JUMP_SPEED	= 7f;
@@ -125,26 +125,7 @@ public class MinerController {
 		for (Block block : collidable) {
 			if (block == null) continue;
 			if (minerRect.overlaps(block.getBounds())) {
-				if(miner.getState().equals(State.IDLE)) {
-					
-				}else if(miner.getState().equals(State.MINING)) { 
-					if(System.currentTimeMillis() - startMineTime >= MINING_TIME) {
-						miner.setState(State.IDLE);
-					}
-				}else {
-					if(System.currentTimeMillis() - lastMinedTime >= MINE_TIME || canMine == true) {
-						canMine = true;
-					}
-					if(canMine){
-						world.setNull((int)block.getBounds().x, (int)block.getBounds().y);
-						block.mine(true);
-						lastMinedTime = System.currentTimeMillis();
-						canMine = false;
-						miner.setState(State.MINING);
-						startMineTime = System.currentTimeMillis();
-								
-					}
-				}
+				mineBlock(block);
 				miner.getVelocity().x = 0;
 				break;
 			}
@@ -153,7 +134,7 @@ public class MinerController {
 		// reset the x position of the collision box
 		minerRect.x = miner.getPosition().x;
 		
-		//---------------------Y AXIS COLLISION DETECTION
+		//---------------------    Y AXIS COLLISION DETECTION   -------------------------
 		
 		// the same thing but on the vertical Y axis
 		startX = (int) miner.getBounds().x;
@@ -171,27 +152,7 @@ public class MinerController {
 		for (Block block : collidable) {
 			if (block == null) continue;
 			if (minerRect.overlaps(block.getBounds())) {
-				if(miner.getVelocity().y < 0) {
-					if(miner.getState().equals(State.IDLE)) {
-					
-					}else if(miner.getState().equals(State.MINING)) { 
-						if(System.currentTimeMillis() - startMineTime >= MINING_TIME) {
-							miner.setState(State.IDLE);
-						}
-					}else {
-						if(System.currentTimeMillis() - lastMinedTime >= MINE_TIME || canMine) {
-							canMine = true;
-						}
-						if(canMine){
-							world.setNull((int)block.getBounds().x, (int)block.getBounds().y);
-							block.mine(true);
-							lastMinedTime = System.currentTimeMillis();
-							canMine = false;
-							miner.setState(State.MINING);
-							startMineTime = System.currentTimeMillis();
-						}
-					}
-				}	
+				mineBlock(block);
 				if (miner.getVelocity().y < 0) {
 					grounded = true;
 				}
@@ -224,45 +185,50 @@ public class MinerController {
 			}
 		}
 	}
+	public void mineBlock(Block block) {
+		if((xPerc == 0 && yPerc == 0)) {
+			//Do Not mine the blocks
+			}else {
+				block.touch();
+				if(block.getTouch() > 50) {
+	
+					world.setNull((int)block.getBounds().x, (int)block.getBounds().y);
+					block.mine(true);
+					lastMinedTime = System.currentTimeMillis();
+					canMine = false;
+						
+				
+				}
+			}
+	}
 
 	
 	private boolean processInput() {
 		yPerc = miner.getYPerc();
 		xPerc = miner.getXPerc();
-		if(miner.getState().equals(State.MINING)) {
-			//Do nothing until mining is done
-		}else {
+		
 			if(yPerc == 0 && xPerc == 0) {
 				miner.setState(State.IDLE);
 			}
 			if(yPerc > 0) {
-				miner.setState(State.RIGHT);
-				if(xPerc< 0) {
-					miner.setState(State.DOWN);
+				if(xPerc < 0) {
 					miner.getVelocity().y = MAX_JUMP_SPEED*xPerc;
 				}else if(xPerc > 0) {
-					miner.setState(State.UP);
 					miner.getVelocity().y = MAX_JUMP_SPEED*xPerc;
-				}else {
-					miner.setState(State.RIGHT);
 				}
-			
 				miner.getAcceleration().x = ACCELERATION*yPerc;
 			}
 			if(yPerc < 0) {
-				miner.setState(State.LEFT);
 				if(xPerc < 0) {
-					miner.setState(State.DOWN);
 					miner.getVelocity().y = MAX_JUMP_SPEED*xPerc;
 				}else if(xPerc > 0) {
-					miner.setState(State.UP);
 					miner.getVelocity().y = MAX_JUMP_SPEED*xPerc;
 				}else {
 					
 				}
 				miner.getAcceleration().x = ACCELERATION*yPerc;
 			}
-		}
+		
 		
 		return false;
 	}
