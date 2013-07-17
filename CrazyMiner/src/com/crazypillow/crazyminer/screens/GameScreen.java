@@ -6,6 +6,7 @@ import  com.crazypillow.crazyminer.view.WorldRenderer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
 
 public class GameScreen implements Screen {
@@ -13,16 +14,15 @@ public class GameScreen implements Screen {
 	private World 			world;
 	private WorldRenderer 	renderer;
 	private MinerController	controller;
+	private FileHandle handle;
 	
 
 	private int width, height;
 	
 	@Override
 	public void show() {
-		
-	
-		
-		world = new World();
+		handle = Gdx.files.local("world.xml");
+		world = new World(handle);
 		renderer = new WorldRenderer(world);
 		controller = new MinerController(world);
 		
@@ -52,7 +52,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
+		dispose();
 	}
 
 	@Override
@@ -63,7 +63,9 @@ public class GameScreen implements Screen {
 	@Override
 	public void dispose() {
 		Gdx.input.setInputProcessor(null);
-		world.save();
+		System.out.println("Attempting to save world...");
+		world.saveWorld(handle);
+		
 	}
 
 	

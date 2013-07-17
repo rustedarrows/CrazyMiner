@@ -179,8 +179,8 @@ public class MinerController {
 		collidable.clear();
 		for (int x = startX; x <= endX; x++) {
 			for (int y = startY; y <= endY; y++) {
-				if (x >= 0 && x < world.getLevel().getWidth() && y >=0 && y < world.getLevel().getHeight()) {
-					collidable.add(world.getLevel().get(x, y));
+				if (x >= 0 && x < world.getWidth() && y >=0 && y < world.getHeight()) {
+					collidable.add(world.get(x, y));
 				}
 			}
 		}

@@ -1,14 +1,21 @@
 package com.crazypillow.crazyminer.model;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringWriter;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.XmlWriter;
 
 public class Level {
 
 	private int width;
 	private int height;
 	private Block[][] blocks;
+	BufferedReader reader;
 
 	public int getWidth() {
 		return width;
@@ -35,9 +42,78 @@ public class Level {
 	}
 
 	public Level() {
+		writeLevel();
 		loadDemoLevel();
 	}
 	
+	private void writeLevel() {
+		boolean isLocAvailable = Gdx.files.isLocalStorageAvailable();
+		if(isLocAvailable) {
+			String locRoot = Gdx.files.getLocalStoragePath();
+		}
+		width = 50;
+		height = 25;
+		StringWriter writer = new StringWriter();
+		XmlWriter xml = new XmlWriter(writer);
+		try {
+			xml.element("world")
+				 .element("width")
+					.text("50")
+				.pop()
+				.element("height")
+					.text("25")
+				.pop()
+				.element("player")
+					.element("x")
+						.text("10")
+					.pop()
+					.element("y")
+						.text("25")
+					.pop()
+					.element("energy")
+						.text("100")
+					.pop()
+					.element("money")
+						.text("500")
+					.pop()
+				.pop()
+				
+				.element("block")
+					.element("type")
+						.text("dirt")
+					.pop()
+					.element("durability")
+						.text("50")
+					.pop()
+					.element("price")
+						.text("500")
+					.pop();
+					for(int col = 0; col < width; col++) {
+						for(int row = 0; row < height; row++) {
+							xml.element("location");
+							xml.attribute("x", col);
+							xml.attribute("y", row);
+							xml.pop();
+						}
+					}
+					
+				xml.pop();
+			xml.pop();
+			FileHandle handle = Gdx.files.local("world.xml");
+			
+			if(handle.exists()) {
+				handle.writeString(writer.toString(), false);
+			}else {
+				handle.file().createNewFile();
+				handle.writeString(writer.toString(), false);
+			}
+			
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public Block get(int x, int y) {
 		return blocks[x][y];
 	}
@@ -46,9 +122,14 @@ public class Level {
 	}
 
 	private void loadDemoLevel() {
+		boolean isLocAvailable = Gdx.files.isLocalStorageAvailable();
+		if(isLocAvailable) {
+			String locRoot = Gdx.files.getLocalStoragePath();
+		}
 		width = 50;
 		height = 25;
 		blocks = new Block[width][height];
+		
 		
 		
 		for(int col = 0; col < width; col++) {

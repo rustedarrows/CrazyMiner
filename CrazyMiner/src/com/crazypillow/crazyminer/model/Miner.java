@@ -22,6 +22,9 @@ public class Miner {
 	boolean		facingLeft = true;
 	float		stateTime = 0;
 	boolean		longJump = false;
+	int energy;
+	int money;
+	int armor;
 
 	public Miner(Vector2 position) {
 		this.position = position;
@@ -30,7 +33,36 @@ public class Miner {
 		this.bounds.height = SIZE;
 		this.bounds.width = SIZE;
 	}
+	public Miner(Vector2 position, int energy, int money, int armor) {
+		this.position = position;
+		this.bounds.x = position.x;
+		this.bounds.y = position.y;
+		this.bounds.height = SIZE;
+		this.bounds.width = SIZE;
+		this.energy = energy;
+		this.money = money;
+		this.armor = armor;
+	}
 	
+	
+	public int getEnergy() {
+		return energy;
+	}
+	public void setEnergy(int energy) {
+		this.energy = energy;
+	}
+	public int getMoney() {
+		return money;
+	}
+	public void setMoney(int money) {
+		this.money = money;
+	}
+	public int getArmor() {
+		return armor;
+	}
+	public void setArmor(int armor) {
+		this.armor = armor;
+	}
 	public float getXPerc() {
 		return xPerc;
 	}

@@ -1,0 +1,36 @@
+<world>
+	<width>50</width>
+	<height>25</height>
+	<player>
+		<x>10</x>
+		<y>14</y>
+		<energy>100</energy>
+		<armor>100</armor>
+		<money>500</money>
+	</player>
+	<block>
+		<type>dirt</type>
+		<durability>10</durability>
+		<price>0</price>
+	</block>
+	<block>
+		<type>bronze</type>
+		<durability>15</durability>
+		<price>0</price>
+	</block>
+	<block>
+		<type>silver</type>
+		<durability>30</durability>
+		<price>0</price>
+	</block>
+	<block>
+		<type>gold</type>
+		<durability>40</durability>
+		<price>0</price>
+	</block>
+	<block>
+		<type>diamond</type>
+		<durability>50</durability>
+		<price>0</price>
+	</block>
+</world>
