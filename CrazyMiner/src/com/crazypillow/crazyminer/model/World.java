@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -39,7 +40,8 @@ public class World {
 	/** The collision boxes **/
 	Array<Rectangle> collisionRects = new Array<Rectangle>();
 
-	// Getters -----------
+	// Debug
+	int count;
 	
 	public Array<Rectangle> getCollisionRects() {
 		return collisionRects;
@@ -87,6 +89,7 @@ public class World {
 			loadWorld(handle);
 		}else {
 			try {
+				System.out.println("creating the file");
 				handle.file().createNewFile(); //Creates new File
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -126,7 +129,7 @@ public class World {
 			
 			Iterator<Element> iterator_block = xml_element.getChildrenByName("block").iterator();
 			while(iterator_block.hasNext()) {
-				Element block = (Element)iterator_block.next();
+				XmlReader.Element block = (XmlReader.Element)iterator_block.next();
 				type = block.getChildByName("type").getText();
 				if(type.equals("bronze")) {
 					blockType = BlockType.BRONZE;
@@ -164,7 +167,34 @@ public class World {
 	 * @param handle file to write the world to
 	 **/
 	public void createWorld(FileHandle handle) {
-		
+		miner = new Miner(new Vector2(10, 27));
+		blocks = new Block[width][height];
+		for(int col = 0; col < width; col++) {
+			for(int row = 0; row < height; row++) {
+				int i = MathUtils.random(4);
+				switch(i) {
+				case 0: //Dirt
+					blocks[col][row] = new Block(new Vector2(col, row), BlockType.DIRT, BlockType.DIRT.getDurability(), BlockType.DIRT.getPrice());
+					break;
+				case 1: //Bronze
+					blocks[col][row] = new Block(new Vector2(col, row), BlockType.BRONZE, BlockType.BRONZE.getDurability(), BlockType.BRONZE.getPrice());
+					break;
+				case 2: //Silver
+					blocks[col][row] = new Block(new Vector2(col, row), BlockType.SILVER, BlockType.SILVER.getDurability(), BlockType.SILVER.getPrice());
+					break;
+				case 3: //Gold
+					blocks[col][row] = new Block(new Vector2(col, row), BlockType.GOLD, BlockType.GOLD.getDurability(), BlockType.GOLD.getPrice());
+					break;
+				case 4: //Diamond
+					blocks[col][row] = new Block(new Vector2(col, row), BlockType.DIAMOND, BlockType.DIAMOND.getDurability(), BlockType.DIAMOND.getPrice());
+					break;
+				default: //Dirt
+					blocks[col][row] = new Block(new Vector2(col, row), BlockType.DIRT, BlockType.DIRT.getDurability(), BlockType.DIRT.getPrice());
+					break;
+
+				}
+			}
+		}
 	}
 	
 	/**
@@ -216,6 +246,7 @@ public class World {
 							if(blocks[col][row] == null) {
 								
 							}else if (blocks[col][row].getType().equals(BlockType.DIRT)) {
+								
 								xml.element("location")
 									.attribute("x", col)
 									.attribute("y", row)
@@ -239,7 +270,7 @@ public class World {
 					for(int row = 0; row < height; row++) {
 						if(blocks[col][row] == null) {
 							
-						}else if(blocks[col][row].getType().equals(BlockType.DIRT)) {
+						}else if(blocks[col][row].getType().equals(BlockType.BRONZE)) {
 							xml.element("location")
 								.attribute("x", col)
 								.attribute("y", row)
@@ -263,7 +294,7 @@ public class World {
 					for(int row = 0; row < height; row++) {
 						if(blocks[col][row] == null) {
 							
-						}else if(blocks[col][row].getType().equals(BlockType.DIRT)) {
+						}else if(blocks[col][row].getType().equals(BlockType.SILVER)) {
 							xml.element("location")
 								.attribute("x", col)
 								.attribute("y", row)
@@ -287,7 +318,7 @@ public class World {
 					for(int row = 0; row < height; row++) {
 						if(blocks[col][row] == null) {
 							
-						}else if(blocks[col][row].getType().equals(BlockType.DIRT)) {
+						}else if(blocks[col][row].getType().equals(BlockType.GOLD)) {
 							xml.element("location")
 								.attribute("x", col)
 								.attribute("y", row)
@@ -311,7 +342,7 @@ public class World {
 					for(int row = 0; row < height; row++) {
 						if(blocks[col][row] == null) {
 							
-						}else if(blocks[col][row].getType().equals(BlockType.DIRT)) {
+						}else if(blocks[col][row].getType().equals(BlockType.DIAMOND)) {
 							xml.element("location")
 								.attribute("x", col)
 								.attribute("y", row)
