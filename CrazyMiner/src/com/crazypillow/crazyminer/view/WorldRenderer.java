@@ -100,7 +100,6 @@ public class WorldRenderer {
         touchpad.setBounds(15, 15, 128, 128);
  
         //Create a Stage and add TouchPad
-
         stage.addActor(touchpad);            
         Gdx.input.setInputProcessor(stage);
 		

@@ -12,7 +12,7 @@ public class Miner {
 	}
 	
 	
-	public static final float SIZE = 0.75f; // half a unit
+	public static final float SIZE = 0.50f; // half a unit
 
 	Vector2 	position = new Vector2();
 	Vector2 	acceleration = new Vector2();
@@ -56,6 +56,13 @@ public class Miner {
 	}
 	public void setMoney(int money) {
 		this.money = money;
+	}
+	/**
+	 * Adds specified amount to money of Miner
+	 * @param amount the amount to add to the current cash pile
+	 */
+	public void addMoney(int amount) {
+		this.money += amount;
 	}
 	public int getArmor() {
 		return armor;

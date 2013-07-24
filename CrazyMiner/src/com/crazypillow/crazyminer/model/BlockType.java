@@ -9,19 +9,19 @@ public enum BlockType {
 	DIAMOND(50, 0);
 	
 	private final int durability;
-	private final int price;
+	private final int value;
 	
-	BlockType(int durability, int price) {
+	BlockType(int durability, int value) {
 		this.durability = durability;
-		this.price = price;
+		this.value = value;
 	}
 
 	public int getDurability() {
 		return durability;
 	}
 
-	public int getPrice() {
-		return price;
+	public int getValue() {
+		return value;
 	}
 	
 }

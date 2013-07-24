@@ -13,7 +13,7 @@ public class Block {
 	private boolean mined;
 	private int touch; //number of times it has been touched by the miner
 	private int durability; //Number of touches it needs to break
-	private int price;
+	private int value;
 	private BlockType type; //Type of block
 	
 	public Block(Vector2 pos) { //Creates a default dirt block when given a position
@@ -24,7 +24,7 @@ public class Block {
 		this.bounds.height = SIZE;
 		this.type = BlockType.DIRT;
 		this.durability = 10;
-		this.price = 0;
+		this.value = 0;
 	}
 	public Block(Vector2 pos, BlockType type, int durability, int price) {
 		this.position = pos;
@@ -33,7 +33,7 @@ public class Block {
 		this.bounds.width = SIZE;
 		this.bounds.height = SIZE;
 		this.durability = durability;
-		this.price = price;
+		this.value = price;
 		this.type = type;
 	}
 
@@ -44,16 +44,18 @@ public class Block {
 	public Rectangle getBounds() {
 		return bounds;
 	}
-	public void mine(boolean val) {
+	public void placeholder(boolean val) {
 		this.mined = val;
 	}
 	public boolean getMinded() {
 		return mined;
 	}
-	public void touch() {
+	
+	public void mine() {
+		//TODO: Add paramater to allow for different strength drills to "drill" quicker
 		touch++;
 	}
-	public int getTouch() {
+	public int getMined() {
 		return touch;
 	}
 	public void setDurability(int durability) {
@@ -62,11 +64,11 @@ public class Block {
 	public int getDurability() {
 		return durability;
 	}
-	public int getPrice() {
-		return price;
+	public int getValue() {
+		return value;
 	}
-	public void setPrice(int price) {
-		this.price = price;
+	public void setValue(int price) {
+		this.value = price;
 	}
 	public BlockType getType() {
 		return type;

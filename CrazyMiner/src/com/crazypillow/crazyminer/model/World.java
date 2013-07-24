@@ -27,7 +27,7 @@ public class World {
 	FileHandle handle;
 	
 	private int width = 50;
-	private int height = 25;
+	private int height = 50;
 	private Block[][] blocks;
 	
 	//---------Used for Map Creating and generation
@@ -155,7 +155,7 @@ public class World {
 					Element position = (Element)iterator_location.next();
 					x = Integer.parseInt(position.getAttribute("x"));
 					y = Integer.parseInt(position.getAttribute("y"));
-					blocks[x][y] = new Block(new Vector2(x, y), blockType, durability, price);
+					blocks[x][y] = new Block(new Vector2(x, -y), blockType, durability, price);
 				}
 			}
 		} catch (IOException e) {
@@ -172,24 +172,26 @@ public class World {
 		for(int col = 0; col < width; col++) {
 			for(int row = 0; row < height; row++) {
 				int i = MathUtils.random(4);
+				
+				//TODO: Change this to not have so much work needed.
 				switch(i) {
 				case 0: //Dirt
-					blocks[col][row] = new Block(new Vector2(col, row), BlockType.DIRT, BlockType.DIRT.getDurability(), BlockType.DIRT.getPrice());
+					blocks[col][row] = new Block(new Vector2(col, -row), BlockType.DIRT, BlockType.DIRT.getDurability(), BlockType.DIRT.getValue());
 					break;
 				case 1: //Bronze
-					blocks[col][row] = new Block(new Vector2(col, row), BlockType.BRONZE, BlockType.BRONZE.getDurability(), BlockType.BRONZE.getPrice());
+					blocks[col][row] = new Block(new Vector2(col, -row), BlockType.BRONZE, BlockType.BRONZE.getDurability(), BlockType.BRONZE.getValue());
 					break;
 				case 2: //Silver
-					blocks[col][row] = new Block(new Vector2(col, row), BlockType.SILVER, BlockType.SILVER.getDurability(), BlockType.SILVER.getPrice());
+					blocks[col][row] = new Block(new Vector2(col, -row), BlockType.SILVER, BlockType.SILVER.getDurability(), BlockType.SILVER.getValue());
 					break;
 				case 3: //Gold
-					blocks[col][row] = new Block(new Vector2(col, row), BlockType.GOLD, BlockType.GOLD.getDurability(), BlockType.GOLD.getPrice());
+					blocks[col][row] = new Block(new Vector2(col, -row), BlockType.GOLD, BlockType.GOLD.getDurability(), BlockType.GOLD.getValue());
 					break;
 				case 4: //Diamond
-					blocks[col][row] = new Block(new Vector2(col, row), BlockType.DIAMOND, BlockType.DIAMOND.getDurability(), BlockType.DIAMOND.getPrice());
+					blocks[col][row] = new Block(new Vector2(col, -row), BlockType.DIAMOND, BlockType.DIAMOND.getDurability(), BlockType.DIAMOND.getValue());
 					break;
 				default: //Dirt
-					blocks[col][row] = new Block(new Vector2(col, row), BlockType.DIRT, BlockType.DIRT.getDurability(), BlockType.DIRT.getPrice());
+					blocks[col][row] = new Block(new Vector2(col, -row), BlockType.DIRT, BlockType.DIRT.getDurability(), BlockType.DIRT.getValue());
 					break;
 
 				}
@@ -239,7 +241,7 @@ public class World {
 						.text(BlockType.DIRT.getDurability())
 					.pop()
 					.element("price")
-						.text(BlockType.DIRT.getPrice())
+						.text(BlockType.DIRT.getValue())
 					.pop();
 					for(int col = 0; col < width; col++) {
 						for(int row = 0; row < height; row++) {
@@ -264,7 +266,7 @@ public class World {
 						.text(BlockType.BRONZE.getDurability())
 					.pop()
 					.element("price")
-						.text(BlockType.BRONZE.getPrice())
+						.text(BlockType.BRONZE.getValue())
 					.pop();
 				for(int col = 0; col < width; col++) {
 					for(int row = 0; row < height; row++) {
@@ -288,7 +290,7 @@ public class World {
 						.text(BlockType.SILVER.getDurability())
 					.pop()
 					.element("price")
-						.text(BlockType.SILVER.getPrice())
+						.text(BlockType.SILVER.getValue())
 					.pop();
 				for(int col = 0; col < width; col++) {
 					for(int row = 0; row < height; row++) {
@@ -312,7 +314,7 @@ public class World {
 						.text(BlockType.GOLD.getDurability())
 					.pop()
 					.element("price")
-						.text(BlockType.GOLD.getPrice())
+						.text(BlockType.GOLD.getValue())
 					.pop();
 				for(int col = 0; col < width; col++) {
 					for(int row = 0; row < height; row++) {
@@ -336,7 +338,7 @@ public class World {
 						.text(BlockType.DIAMOND.getDurability())
 					.pop()
 					.element("price")
-						.text(BlockType.DIAMOND.getPrice())
+						.text(BlockType.DIAMOND.getValue())
 					.pop();
 				for(int col = 0; col < width; col++) {
 					for(int row = 0; row < height; row++) {
@@ -360,6 +362,50 @@ public class World {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	/**
+	 * Creates a block of 50 x 50 blocks and expands the array accordingly
+	 * Note: Verrrrrry Verrrrry Slow way of doing this, probably a faster way
+	 */
+	public void createBlock() {
+		int tempX = width + 50;
+		int tempY = height + 50;
+		Block[][] newBlocks = new Block[tempX][tempY];
+		for(int row = 0; row < width; row++) {
+			for(int col = 0; col < height; col++) {
+				newBlocks[row][col] = blocks[row][col];
+			}
+		}
+		for(int row = width; row < tempX; row++) {
+			for(int col = height; col < tempY; col++) {
+				int i = MathUtils.random(4);
+				//TODO: Change this to not have so much work needed.
+				switch(i) {
+				case 0: //Dirt
+					newBlocks[col][row] = new Block(new Vector2(col, -row), BlockType.DIRT, BlockType.DIRT.getDurability(), BlockType.DIRT.getValue());
+					break;
+				case 1: //Bronze
+					newBlocks[col][row] = new Block(new Vector2(col, -row), BlockType.BRONZE, BlockType.BRONZE.getDurability(), BlockType.BRONZE.getValue());
+					break;
+				case 2: //Silver
+					newBlocks[col][row] = new Block(new Vector2(col, -row), BlockType.SILVER, BlockType.SILVER.getDurability(), BlockType.SILVER.getValue());
+					break;
+				case 3: //Gold
+					newBlocks[col][row] = new Block(new Vector2(col, -row), BlockType.GOLD, BlockType.GOLD.getDurability(), BlockType.GOLD.getValue());
+					break;
+				case 4: //Diamond
+					newBlocks[col][row] = new Block(new Vector2(col, -row), BlockType.DIAMOND, BlockType.DIAMOND.getDurability(), BlockType.DIAMOND.getValue());
+					break;
+				default: //Dirt
+					newBlocks[col][row] = new Block(new Vector2(col, -row), BlockType.DIRT, BlockType.DIRT.getDurability(), BlockType.DIRT.getValue());
+					break;
+				}
+			}
+		}
+		blocks = new Block[tempX][tempY];
+		blocks = newBlocks;
+		width = tempX;
+		height = tempY;
 	}
 	
 	

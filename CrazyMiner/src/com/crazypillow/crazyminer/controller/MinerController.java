@@ -62,8 +62,10 @@ public class MinerController {
 		// Processing the input - setting the states of Bob
 		processInput();
 		
-		// If Bob is grounded then reset the state to IDLE 
-		
+		// If we are ending the end of our block, generate a new one and update the stuff accordingly.
+		if((int)miner.getPosition().y + world.getHeight() < 10) {
+			world.createBlock();
+		}
 		// Setting initial vertical acceleration 
 		miner.getAcceleration().y = GRAVITY;
 		
@@ -187,16 +189,13 @@ public class MinerController {
 	}
 	public void mineBlock(Block block) {
 		if((xPerc == 0 && yPerc == 0)) {
-			//Do Not mine the blocks
+			//Do Not mine the blocks, as we aren't actually moving
 			}else {
-				block.touch();
-				if(block.getTouch() > 50) {
-	
+				block.mine(); 
+				if(block.getMined() > block.getDurability()) {
+					miner.addMoney(block.getValue());
 					world.setNull((int)block.getBounds().x, (int)block.getBounds().y);
-					block.mine(true);
-					lastMinedTime = System.currentTimeMillis();
-					canMine = false;
-						
+					block.placeholder(true);
 				
 				}
 			}
