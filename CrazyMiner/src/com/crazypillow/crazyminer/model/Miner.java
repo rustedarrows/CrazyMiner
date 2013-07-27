@@ -20,11 +20,12 @@ public class Miner {
 	Rectangle 	bounds = new Rectangle();
 	State		state = State.IDLE; 
 	boolean		facingLeft = true;
-	float		stateTime = 0;
-	boolean		longJump = false;
+	boolean 	dead = false;
 	int energy;
 	int money;
 	int armor;
+	float energyTick = 500l; //Rate at which the energy decreases
+	long lastEnergyTick;
 
 	public Miner(Vector2 position) {
 		this.position = position;
@@ -50,6 +51,9 @@ public class Miner {
 	}
 	public void setEnergy(int energy) {
 		this.energy = energy;
+	}
+	public void reEnergie() {
+		energy = 100;
 	}
 	public int getMoney() {
 		return money;
@@ -116,20 +120,6 @@ public class Miner {
 	}
 	
 
-	public float getStateTime() {
-		return stateTime;
-	}
-
-	public boolean isLongJump() {
-		return longJump;
-	}
-
-
-	public void setLongJump(boolean longJump) {
-		this.longJump = longJump;
-	}
-
-
 	public void setPosition(Vector2 position) {
 		this.position = position;
 		this.bounds.setX(position.x);
@@ -150,18 +140,23 @@ public class Miner {
 	public void setBounds(Rectangle bounds) {
 		this.bounds = bounds;
 	}
-
-
-	public void setStateTime(float stateTime) {
-		this.stateTime = stateTime;
+	
+	public boolean isDead() {
+		return dead;
 	}
 
-
 	public void update(float delta) {
-//		position.add(velocity.tmp().mul(delta));
-//		bounds.x = position.x;
-//		bounds.y = position.y;
-		stateTime += delta;
+		if(armor <= 0) {
+			dead = true;
+		}
+		if(lastEnergyTick - System.currentTimeMillis() > energyTick) {
+			if(energy < 0) {
+				dead = true;
+			}else {
+				energy -= 1;
+			}
+		}
+	
 	}
 	
 }

@@ -10,7 +10,6 @@ public class Block {
 	
 	Vector2 	position = new Vector2();
 	Rectangle 	bounds = new Rectangle();
-	private boolean mined;
 	private int touch; //number of times it has been touched by the miner
 	private int durability; //Number of touches it needs to break
 	private int value;
@@ -43,12 +42,6 @@ public class Block {
 
 	public Rectangle getBounds() {
 		return bounds;
-	}
-	public void placeholder(boolean val) {
-		this.mined = val;
-	}
-	public boolean getMinded() {
-		return mined;
 	}
 	
 	public void mine() {

@@ -1,7 +1,5 @@
 package com.crazypillow.crazyminer.controller;
 
-import java.util.HashMap;
-import java.util.Map;
 
 import com.crazypillow.crazyminer.model.Block;
 import com.crazypillow.crazyminer.model.Miner;
@@ -18,20 +16,14 @@ public class MinerController {
 		X, Y
 	}
 	
-	private static final float MINE_TIME 		= 300l; //Time between mining attempts
-	private static final float TIME_TO_MINE		= 300l; //Time to mine, must be intersecting for that long before counts as mined
 	private static final float ACCELERATION 	= 20f;
 	private static final float GRAVITY 			= -20f;
-	private static final float MAX_JUMP_SPEED	= 7f;
+	private static final float MAX_VERTICAL_VELOCITY	= 7f;
 	private static final float DAMP 			= 0.90f;
-	private static final float MAX_VEL 			= 6f;
+	private static final float MAX_VEL 			= 10f;
 	
 	private World 	world;
 	private Miner 	miner;
-	private boolean grounded = false;
-	private long lastMinedTime;
-	private long startMineTime;
-	private boolean canMine = true;
 	
 	float yPerc, xPerc;
 	
@@ -62,10 +54,7 @@ public class MinerController {
 		// Processing the input - setting the states of Bob
 		processInput();
 		
-		// If we are ending the end of our block, generate a new one and update the stuff accordingly.
-		if((int)miner.getPosition().y + world.getHeight() < 10) {
-			world.createBlock();
-		}
+		
 		// Setting initial vertical acceleration 
 		miner.getAcceleration().y = GRAVITY;
 		
@@ -150,13 +139,14 @@ public class MinerController {
 		populateCollidableBlocks(startX, startY, endX, endY);
 		
 		minerRect.y += miner.getVelocity().y;
-		
+		//System.out.println("Vel: " + miner.getVelocity().y);
 		for (Block block : collidable) {
 			if (block == null) continue;
 			if (minerRect.overlaps(block.getBounds())) {
 				mineBlock(block);
-				if (miner.getVelocity().y < 0) {
-					grounded = true;
+				
+				if(miner.getVelocity().y < -0.4) {
+					System.out.println("We took damage");
 				}
 				miner.getVelocity().y = 0;
 				break;
@@ -195,7 +185,6 @@ public class MinerController {
 				if(block.getMined() > block.getDurability()) {
 					miner.addMoney(block.getValue());
 					world.setNull((int)block.getBounds().x, (int)block.getBounds().y);
-					block.placeholder(true);
 				
 				}
 			}
@@ -211,17 +200,17 @@ public class MinerController {
 			}
 			if(yPerc > 0) {
 				if(xPerc < 0) {
-					miner.getVelocity().y = MAX_JUMP_SPEED*xPerc;
+					miner.getVelocity().y = MAX_VERTICAL_VELOCITY*xPerc;
 				}else if(xPerc > 0) {
-					miner.getVelocity().y = MAX_JUMP_SPEED*xPerc;
+					miner.getVelocity().y = MAX_VERTICAL_VELOCITY*xPerc;
 				}
 				miner.getAcceleration().x = ACCELERATION*yPerc;
 			}
 			if(yPerc < 0) {
 				if(xPerc < 0) {
-					miner.getVelocity().y = MAX_JUMP_SPEED*xPerc;
+					miner.getVelocity().y = MAX_VERTICAL_VELOCITY*xPerc;
 				}else if(xPerc > 0) {
-					miner.getVelocity().y = MAX_JUMP_SPEED*xPerc;
+					miner.getVelocity().y = MAX_VERTICAL_VELOCITY*xPerc;
 				}else {
 					
 				}

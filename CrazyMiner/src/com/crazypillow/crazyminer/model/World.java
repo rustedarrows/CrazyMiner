@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -21,13 +20,11 @@ public class World {
 
 	/** Our player controlled hero **/
 	Miner miner;
-	/** A world has a level through which Bob needs to go through **/
-	Level level;
 	
 	FileHandle handle;
 	
 	private int width = 50;
-	private int height = 50;
+	private int height = 1000;
 	private Block[][] blocks;
 	
 	//---------Used for Map Creating and generation
@@ -86,6 +83,7 @@ public class World {
 	public World(FileHandle handle) {
 		this.handle = handle;
 		if(handle.exists()) {
+			//createWorld(handle);
 			loadWorld(handle);
 		}else {
 			try {
@@ -155,7 +153,7 @@ public class World {
 					Element position = (Element)iterator_location.next();
 					x = Integer.parseInt(position.getAttribute("x"));
 					y = Integer.parseInt(position.getAttribute("y"));
-					blocks[x][y] = new Block(new Vector2(x, -y), blockType, durability, price);
+					blocks[x][y] = new Block(new Vector2(x, y), blockType, durability, price);
 				}
 			}
 		} catch (IOException e) {
@@ -163,38 +161,45 @@ public class World {
 		}
 	}
 	/**
-	 * Creates a new world with default size
+	 * Creates a new world with default size, and miner 
 	 * @param handle file to write the world to
 	 **/
 	public void createWorld(FileHandle handle) {
-		miner = new Miner(new Vector2(10, 27));
+		miner = new Miner(new Vector2(10, 1001), 100, 0, 100);
 		blocks = new Block[width][height];
 		for(int col = 0; col < width; col++) {
 			for(int row = 0; row < height; row++) {
 				int i = MathUtils.random(4);
+				BlockType type;
 				
-				//TODO: Change this to not have so much work needed.
 				switch(i) {
 				case 0: //Dirt
-					blocks[col][row] = new Block(new Vector2(col, -row), BlockType.DIRT, BlockType.DIRT.getDurability(), BlockType.DIRT.getValue());
+					type = BlockType.DIRT;
+					//blocks[col][row] = new Block(new Vector2(col, row), BlockType.DIRT, BlockType.DIRT.getDurability(), BlockType.DIRT.getValue());
 					break;
 				case 1: //Bronze
-					blocks[col][row] = new Block(new Vector2(col, -row), BlockType.BRONZE, BlockType.BRONZE.getDurability(), BlockType.BRONZE.getValue());
+					type = BlockType.BRONZE;
+					//blocks[col][row] = new Block(new Vector2(col, row), BlockType.BRONZE, BlockType.BRONZE.getDurability(), BlockType.BRONZE.getValue());
 					break;
 				case 2: //Silver
-					blocks[col][row] = new Block(new Vector2(col, -row), BlockType.SILVER, BlockType.SILVER.getDurability(), BlockType.SILVER.getValue());
+					type = BlockType.SILVER;
+					//blocks[col][row] = new Block(new Vector2(col, row), BlockType.SILVER, BlockType.SILVER.getDurability(), BlockType.SILVER.getValue());
 					break;
 				case 3: //Gold
-					blocks[col][row] = new Block(new Vector2(col, -row), BlockType.GOLD, BlockType.GOLD.getDurability(), BlockType.GOLD.getValue());
+					type = BlockType.GOLD;
+					//blocks[col][row] = new Block(new Vector2(col, row), BlockType.GOLD, BlockType.GOLD.getDurability(), BlockType.GOLD.getValue());
 					break;
 				case 4: //Diamond
-					blocks[col][row] = new Block(new Vector2(col, -row), BlockType.DIAMOND, BlockType.DIAMOND.getDurability(), BlockType.DIAMOND.getValue());
+					type = BlockType.DIAMOND;
+					//blocks[col][row] = new Block(new Vector2(col, row), BlockType.DIAMOND, BlockType.DIAMOND.getDurability(), BlockType.DIAMOND.getValue());
 					break;
 				default: //Dirt
-					blocks[col][row] = new Block(new Vector2(col, -row), BlockType.DIRT, BlockType.DIRT.getDurability(), BlockType.DIRT.getValue());
+					type = BlockType.DIRT;
+					//blocks[col][row] = new Block(new Vector2(col, row), BlockType.DIRT, BlockType.DIRT.getDurability(), BlockType.DIRT.getValue());
 					break;
 
 				}
+				blocks[col][row] = new Block(new Vector2(col, row), type, type.getDurability(), type.getValue());
 			}
 		}
 	}
@@ -363,52 +368,7 @@ public class World {
 			e.printStackTrace();
 		}
 	}
-	/**
-	 * Creates a block of 50 x 50 blocks and expands the array accordingly
-	 * Note: Verrrrrry Verrrrry Slow way of doing this, probably a faster way
-	 */
-	public void createBlock() {
-		int tempX = width + 50;
-		int tempY = height + 50;
-		Block[][] newBlocks = new Block[tempX][tempY];
-		for(int row = 0; row < width; row++) {
-			for(int col = 0; col < height; col++) {
-				newBlocks[row][col] = blocks[row][col];
-			}
-		}
-		for(int row = width; row < tempX; row++) {
-			for(int col = height; col < tempY; col++) {
-				int i = MathUtils.random(4);
-				//TODO: Change this to not have so much work needed.
-				switch(i) {
-				case 0: //Dirt
-					newBlocks[col][row] = new Block(new Vector2(col, -row), BlockType.DIRT, BlockType.DIRT.getDurability(), BlockType.DIRT.getValue());
-					break;
-				case 1: //Bronze
-					newBlocks[col][row] = new Block(new Vector2(col, -row), BlockType.BRONZE, BlockType.BRONZE.getDurability(), BlockType.BRONZE.getValue());
-					break;
-				case 2: //Silver
-					newBlocks[col][row] = new Block(new Vector2(col, -row), BlockType.SILVER, BlockType.SILVER.getDurability(), BlockType.SILVER.getValue());
-					break;
-				case 3: //Gold
-					newBlocks[col][row] = new Block(new Vector2(col, -row), BlockType.GOLD, BlockType.GOLD.getDurability(), BlockType.GOLD.getValue());
-					break;
-				case 4: //Diamond
-					newBlocks[col][row] = new Block(new Vector2(col, -row), BlockType.DIAMOND, BlockType.DIAMOND.getDurability(), BlockType.DIAMOND.getValue());
-					break;
-				default: //Dirt
-					newBlocks[col][row] = new Block(new Vector2(col, -row), BlockType.DIRT, BlockType.DIRT.getDurability(), BlockType.DIRT.getValue());
-					break;
-				}
-			}
-		}
-		blocks = new Block[tempX][tempY];
-		blocks = newBlocks;
-		width = tempX;
-		height = tempY;
-	}
-	
-	
+		
 	public int getWidth() {
 		return width;
 	}
