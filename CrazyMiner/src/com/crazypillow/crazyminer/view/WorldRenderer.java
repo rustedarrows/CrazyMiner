@@ -1,6 +1,8 @@
 package com.crazypillow.crazyminer.view;
 
+import com.crazypillow.crazyminer.actors.HUD;
 import com.crazypillow.crazyminer.model.Block;
+import com.crazypillow.crazyminer.model.BlockType;
 import com.crazypillow.crazyminer.model.Miner;
 import com.crazypillow.crazyminer.model.Miner.State;
 import com.crazypillow.crazyminer.model.World;
@@ -11,6 +13,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -46,9 +49,14 @@ public class WorldRenderer {
 	private TextureRegion minerUp;
 	private TextureRegion minerDown;
 	private TextureRegion blockTexture;
-	
+	private TextureRegion dirtBlock;
+	private TextureRegion bronzeBlock;
+	private TextureRegion silverBlock;
+	private TextureRegion goldBlock;
+	private TextureRegion diamondBlock;
 	
 	private SpriteBatch spriteBatch;
+	BitmapFont font = new BitmapFont();
 	private int width;
 	private int height;
 	
@@ -78,7 +86,11 @@ public class WorldRenderer {
 		minerLeft = atlas.findRegion("miner-left");
 		minerUp = atlas.findRegion("miner-up");
 		minerDown = atlas.findRegion("miner-down");
-		blockTexture = atlas.findRegion("block");
+		dirtBlock = atlas.findRegion("block");
+		bronzeBlock = atlas.findRegion("block-bronze");
+		silverBlock = atlas.findRegion("block-silver");
+		goldBlock = atlas.findRegion("block-gold");
+		diamondBlock = atlas.findRegion("block-diamond");
 		
 		//Create a touchpad skin    
         touchpadSkin = new Skin();
@@ -100,7 +112,8 @@ public class WorldRenderer {
         touchpad.setBounds(15, 15, 128, 128);
  
         //Create a Stage and add TouchPad
-        stage.addActor(touchpad);            
+        stage.addActor(touchpad);   
+        stage.addActor(new HUD(this.miner));
         Gdx.input.setInputProcessor(stage);
 		
 	}
@@ -114,6 +127,7 @@ public class WorldRenderer {
 		cam.update();
 		spriteBatch.setProjectionMatrix(cam.combined);
 		spriteBatch.begin();
+			
 			drawBlocks();
 			drawMiner();
 		spriteBatch.end();
@@ -129,6 +143,28 @@ public class WorldRenderer {
 
 	private void drawBlocks() {
 		for (Block block : world.getDrawableBlocks((int)CAMERA_WIDTH, (int)CAMERA_HEIGHT)) {
+				blockTexture = dirtBlock;
+				switch(block.getType()) {
+				case DIRT:
+					blockTexture = dirtBlock;
+					break;
+				case BRONZE:
+					blockTexture = bronzeBlock;
+					break;
+				case SILVER:
+					blockTexture = silverBlock;
+					break;
+				case GOLD:
+					blockTexture = goldBlock;
+					break;
+				case DIAMOND:
+					blockTexture = diamondBlock;
+					break;
+				default:
+					blockTexture = dirtBlock;
+					break;
+					
+				}
 				spriteBatch.draw(blockTexture, block.getPosition().x, block.getPosition().y, Block.SIZE, Block.SIZE);
 		}
 	}
@@ -162,7 +198,6 @@ public class WorldRenderer {
 		
 		spriteBatch.draw(minerFrame, miner.getPosition().x , miner.getPosition().y , Miner.SIZE , Miner.SIZE );
 	}
-
 	
 
 	
