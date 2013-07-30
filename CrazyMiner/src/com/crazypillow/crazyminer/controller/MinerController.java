@@ -78,7 +78,7 @@ public class MinerController {
 			miner.getVelocity().x = -MAX_VEL;
 		}
 		
-		// simply updates the state time
+		// update energy drain
 		miner.update(delta);
 
 	}

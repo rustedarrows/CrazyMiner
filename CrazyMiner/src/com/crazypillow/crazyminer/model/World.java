@@ -131,9 +131,6 @@ public class World {
 				type = block.getChildByName("type").getText();
 				if(type.equals("bronze")) {
 					blockType = BlockType.BRONZE;
-				}else if(type.equals("iron")) {
-					blockType = BlockType.IRON;
-
 				}else if(type.equals("silver")) {
 					blockType = BlockType.SILVER;
 

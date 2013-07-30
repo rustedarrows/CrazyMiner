@@ -149,11 +149,12 @@ public class Miner {
 		if(armor <= 0) {
 			dead = true;
 		}
-		if(lastEnergyTick - System.currentTimeMillis() > energyTick) {
+		if(System.currentTimeMillis() - lastEnergyTick > energyTick) {
 			if(energy < 0) {
 				dead = true;
 			}else {
 				energy -= 1;
+				lastEnergyTick = System.currentTimeMillis();
 			}
 		}
 	
