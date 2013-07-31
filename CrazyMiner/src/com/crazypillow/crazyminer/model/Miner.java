@@ -52,8 +52,11 @@ public class Miner {
 	public void setEnergy(int energy) {
 		this.energy = energy;
 	}
-	public void reEnergie() {
+	public void reEnergize() {
 		energy = 100;
+	}
+	public void changeTick(float tick) {
+		this.energyTick = tick;
 	}
 	public int getMoney() {
 		return money;
@@ -150,7 +153,7 @@ public class Miner {
 			dead = true;
 		}
 		if(System.currentTimeMillis() - lastEnergyTick > energyTick) {
-			if(energy < 0) {
+			if(energy <= 0) {
 				dead = true;
 			}else {
 				energy -= 1;

@@ -1,5 +1,6 @@
 package com.crazypillow.crazyminer.view;
 
+import com.crazypillow.crazyminer.actors.Dead;
 import com.crazypillow.crazyminer.actors.HUD;
 import com.crazypillow.crazyminer.model.Block;
 import com.crazypillow.crazyminer.model.BlockType;
@@ -7,8 +8,10 @@ import com.crazypillow.crazyminer.model.Miner;
 import com.crazypillow.crazyminer.model.Miner.State;
 import com.crazypillow.crazyminer.model.World;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,8 +23,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -39,8 +44,13 @@ public class WorldRenderer {
     private Skin touchpadSkin;
     private Drawable touchBackground;
     private Drawable touchKnob;
+    private Skin skin;
+    private Table table;
+    BitmapFont font = new BitmapFont();
+    public Game game;
     
-    private Stage stage;
+    private Actor deadButton;
+	private Stage stage;
 
 	/** Textures **/
 	private TextureRegion minerFrame;
@@ -56,7 +66,7 @@ public class WorldRenderer {
 	private TextureRegion diamondBlock;
 	
 	private SpriteBatch spriteBatch;
-	BitmapFont font = new BitmapFont();
+
 	private int width;
 	private int height;
 	
@@ -68,7 +78,8 @@ public class WorldRenderer {
 		//this.cam.setToOrtho(false, width, height);
 	}
 
-	public WorldRenderer(World world) {
+	public WorldRenderer(World world, Game game) {
+		this.game = game;
 		this.world = world;
 		this.miner = this.world.getMiner();
 		this.cam = new OrthographicCamera(CAMERA_WIDTH, CAMERA_HEIGHT);
@@ -110,16 +121,22 @@ public class WorldRenderer {
         touchpad = new Touchpad(5, touchpadStyle);
         //setBounds(x,y,width,height)
         touchpad.setBounds(15, 15, 128, 128);
- 
+
         //Create a Stage and add TouchPad
         stage.addActor(touchpad);   
         stage.addActor(new HUD(this.miner));
+        
         Gdx.input.setInputProcessor(stage);
 		
 	}
 	
 	
 	public void render(float delta) {
+		if(miner.isDead() && !stage.getActors().contains(deadButton, true)) {
+			deadButton = new Dead(world, this);
+			stage.addActor(deadButton);
+			touchpad.remove();
+		}
 		stage.act(delta);
 		miner.setXPerc(touchpad.getKnobPercentX());
 		miner.setYPerc(touchpad.getKnobPercentY());
@@ -127,12 +144,33 @@ public class WorldRenderer {
 		cam.update();
 		spriteBatch.setProjectionMatrix(cam.combined);
 		spriteBatch.begin();
-			
+			drawShops();
 			drawBlocks();
 			drawMiner();
 		spriteBatch.end();
 		stage.draw();
 	}
+	public static float getCameraWidth() {
+		return CAMERA_WIDTH;
+	}
+
+	public static float getCameraHeight() {
+		return CAMERA_HEIGHT;
+	}
+
+	public Stage getStage() {
+		return stage;
+	}
+
+	public SpriteBatch getSpriteBatch() {
+		return spriteBatch;
+	}
+
+	private void drawShops() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	public void moveCamera(float x,float y){
 	        cam.position.set(x, y, 0);
 	        cam.update();
@@ -198,7 +236,32 @@ public class WorldRenderer {
 		
 		spriteBatch.draw(minerFrame, miner.getPosition().x , miner.getPosition().y , Miner.SIZE , Miner.SIZE );
 	}
-	
+    public BitmapFont getFont()
+    {
+        if( font == null ) {
+            font = new BitmapFont();
+        }
+        return font;
+    }
+
+    public Skin getSkin()
+    {
+        if( skin == null ) {
+            FileHandle skinFile = Gdx.files.internal( "skin/uiskin.json" );
+            skin = new Skin( skinFile );
+        }
+        return skin;
+    }
+
+    public Table getTable()
+    {
+        if( table == null ) {
+            table = new Table( getSkin() );
+            table.setFillParent( true );
+            stage.addActor( table );
+        }
+        return table;
+    }
 
 	
 	
