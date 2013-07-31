@@ -21,6 +21,10 @@ public class GameScreen implements Screen {
 	public GameScreen(Game game) {
 		this.game = game;
 	}
+	public GameScreen(Game game, FileHandle handle) {
+		this.game = game;
+		this.handle = handle;
+	}
 	private int width, height;
 	
 	@Override

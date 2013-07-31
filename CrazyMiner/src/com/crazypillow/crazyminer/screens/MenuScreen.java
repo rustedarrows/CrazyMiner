@@ -1,5 +1,8 @@
 package com.crazypillow.crazyminer.screens;
 
+import java.io.IOException;
+import java.util.Iterator;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -12,6 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.XmlReader;
+import com.badlogic.gdx.utils.XmlReader.Element;
 
 
 public class MenuScreen implements Screen{
@@ -26,7 +31,15 @@ public class MenuScreen implements Screen{
 	private Game game;
 	private SpriteBatch spriteBatch;
 	private Skin skin;
+	private FileHandle handle;
+	private String saveName;
 	
+	
+	/**
+	 * 
+	 * Creates the various menus for the game
+	 * @param game the main game class so we can switch screens
+	 */
 	public MenuScreen(Game game) {
 		this.game = game;
 		spriteBatch = new SpriteBatch();
@@ -49,14 +62,51 @@ public class MenuScreen implements Screen{
 	        }
 		 switch(menu) {
 		 case MAIN:
+			 createMainMenu();
 			 break;
 		 case LOAD:
+			 handle = Gdx.files.local("saves.xml");
+			 createLoadGameMenu(handle);
 			 break;
 		 case SETTINGS:
+			 createSettingsMenu();
 			 break;
 		 default:
+			 createMainMenu();
 			 break;
 		 }
+	}
+	private void createSettingsMenu() {
+		// TODO Auto-generated method stub
+		
+	}
+	private void createLoadGameMenu(FileHandle handle) {
+		table.add("Select Save: ").center();
+		table.row();
+		XmlReader xml = new XmlReader();
+		try {
+			XmlReader.Element xml_element = xml.parse(handle);
+			Iterator<Element> iterator_save = xml_element.getChildrenByName("save").iterator();
+			while(iterator_save.hasNext()) {
+				XmlReader.Element save = (XmlReader.Element)iterator_save.next();
+				saveName = save.getChildByName("name").getText();
+				TextButton saveButton = new TextButton(saveName, getSkin());
+				saveButton.addListener(new ClickListener() {
+		        	@Override
+		        	public void clicked(InputEvent event, float x, float y) {
+		        		FileHandle h = Gdx.files.local(saveName);
+		        		game.setScreen(new GameScreen(game, h));
+		        	}
+		        });
+				table.add(saveButton).size(300, 60).center();
+				table.row();
+			}
+				
+		} catch (IOException e1) {
+				e1.printStackTrace();
+		}
+			
+		
 	}
 	public void createMainMenu() {
 		table.add("Crazy Miner").center();

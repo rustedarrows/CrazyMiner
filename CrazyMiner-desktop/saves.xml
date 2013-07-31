@@ -2,4 +2,7 @@
 	<save>
 		<name>world.xml</name>
 	</save>
-<saves>
+	<save>
+		<name>world1.xml</name>
+	</save>
+</saves>
