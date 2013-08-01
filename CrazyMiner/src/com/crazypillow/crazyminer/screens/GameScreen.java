@@ -8,7 +8,9 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.math.MathUtils;
 
 public class GameScreen implements Screen {
 
@@ -18,33 +20,34 @@ public class GameScreen implements Screen {
 	private FileHandle handle;
 	public Game game;
 	
-	public GameScreen(Game game) {
+	private FPSLogger fps = new FPSLogger();
+
+	public GameScreen(Game game, FileHandle handle, boolean newGame) {
 		this.game = game;
-	}
-	public GameScreen(Game game, FileHandle handle) {
-		this.game = game;
+		if(newGame) {
+			handle.delete();
+		}
 		this.handle = handle;
 	}
 	private int width, height;
 	
 	@Override
 	public void show() {
-		handle = Gdx.files.local("world.xml");
 		world = new World(handle);
 		renderer = new WorldRenderer(world, game);
-		controller = new MinerController(world);
+		controller = new MinerController(world, renderer);
 		
 		
 	}
 
 	@Override
 	public void render(float delta) {
-		
 		Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		controller.update(delta);
 		renderer.render(delta);
+		fps.log();
 	}
 	
 	@Override

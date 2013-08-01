@@ -1,28 +1,15 @@
 package com.crazypillow.crazyminer.view;
 
-import com.crazypillow.crazyminer.actors.Dead;
-import com.crazypillow.crazyminer.actors.HUD;
-import com.crazypillow.crazyminer.model.Block;
-import com.crazypillow.crazyminer.model.BlockType;
-import com.crazypillow.crazyminer.model.Miner;
-import com.crazypillow.crazyminer.model.Miner.State;
-import com.crazypillow.crazyminer.model.World;
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -30,6 +17,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
+import com.crazypillow.crazyminer.actors.Dead;
+import com.crazypillow.crazyminer.actors.HUD;
+import com.crazypillow.crazyminer.actors.Shop;
+import com.crazypillow.crazyminer.actors.ShopButton;
+import com.crazypillow.crazyminer.model.Block;
+import com.crazypillow.crazyminer.model.Miner;
+import com.crazypillow.crazyminer.model.World;
 
 public class WorldRenderer {
 
@@ -49,6 +44,12 @@ public class WorldRenderer {
     BitmapFont font = new BitmapFont();
     public Game game;
     
+    
+    private Texture shop;
+    Sprite shopSprite;
+    
+    private Actor shopButton;
+    private Actor shopActor;
     private Actor deadButton;
 	private Stage stage;
 
@@ -126,6 +127,9 @@ public class WorldRenderer {
         stage.addActor(touchpad);   
         stage.addActor(new HUD(this.miner));
         
+        shop = new Texture(Gdx.files.internal("store.png"));
+        shopSprite = new Sprite(shop);
+        shopSprite.setBounds(15, 1000, 4f, 4f);
         Gdx.input.setInputProcessor(stage);
 		
 	}
@@ -140,7 +144,13 @@ public class WorldRenderer {
 		stage.act(delta);
 		miner.setXPerc(touchpad.getKnobPercentX());
 		miner.setYPerc(touchpad.getKnobPercentY());
-		moveCamera(miner.getPosition().x, miner.getPosition().y);
+		if(miner.getPosition().x < 10) {
+			moveCamera(10, miner.getPosition().y);
+		}else if(miner.getPosition().x > 40) {
+			moveCamera(40, miner.getPosition().y);	
+		}else {
+			moveCamera(miner.getPosition().x, miner.getPosition().y);
+		}
 		cam.update();
 		spriteBatch.setProjectionMatrix(cam.combined);
 		spriteBatch.begin();
@@ -150,6 +160,10 @@ public class WorldRenderer {
 		spriteBatch.end();
 		stage.draw();
 	}
+	public Sprite getShopSprite() {
+		return shopSprite;
+	}
+
 	public static float getCameraWidth() {
 		return CAMERA_WIDTH;
 	}
@@ -167,7 +181,7 @@ public class WorldRenderer {
 	}
 
 	private void drawShops() {
-		// TODO Auto-generated method stub
+		shopSprite.draw(spriteBatch);
 		
 	}
 
@@ -263,7 +277,60 @@ public class WorldRenderer {
         return table;
     }
 
+    
+    /**
+     * Shows the Shop Screen
+     */
+	public void showShop() {
+		if(!stage.getActors().contains(shopActor, false)) {
+			shopActor = new Shop(this);
+			stage.addActor(shopActor);
+		}
+		
+	}
+	/**
+	 * Hides Shop Screen
+	 */
+	public void hideShop() {
+		if(stage.getActors().contains(shopButton, false)) {
+			shopActor.remove();
+			table.clear();
+		}
+	}
 	
-	
+	/**
+	 * Shows the Shop Screen button
+	 */
+	public void showShopSign() {
+			if(!stage.getActors().contains(shopButton, false)) {
+				shopButton = new ShopButton(this);
+				stage.addActor(shopButton);
+		}
+	}
+	/**
+	 * Hides the Shop Screen Button
+	 */
+	public void hideShopSign() {
+		if(stage.getActors().contains(shopButton, false)) {
+			shopButton.remove();
+			table.clear();
+		}
+		
+	}
+	/**
+	 * Removes touchpad from stage
+	 */
+	public void removeTouchpad() {
+		touchpad.remove();
+	}
+	/**
+	 * Adds touchpad to Stage
+	 */
+	public void addTouchpad() {
+		stage.addActor(touchpad);
+	}
+		
+
+
 	
 }

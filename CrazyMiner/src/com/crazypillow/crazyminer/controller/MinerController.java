@@ -5,8 +5,13 @@ import com.crazypillow.crazyminer.model.Block;
 import com.crazypillow.crazyminer.model.Miner;
 import com.crazypillow.crazyminer.model.Miner.State;
 import com.crazypillow.crazyminer.model.World;
+import com.crazypillow.crazyminer.view.WorldRenderer;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
@@ -16,12 +21,15 @@ public class MinerController {
 		X, Y
 	}
 	
+	private boolean shopSignVis = false;
+	
 	private static final float ACCELERATION 	= 20f;
 	private static final float GRAVITY 			= -20f;
 	private static final float MAX_VERTICAL_VELOCITY	= 7f;
 	private static final float DAMP 			= 0.90f;
 	private static final float MAX_VEL 			= 10f;
 	
+	private Table table;
 	private World 	world;
 	private Miner 	miner;
 	
@@ -40,10 +48,12 @@ public class MinerController {
 
 	// Blocks that Bob can collide with any given frame
 	private Array<Block> collidable = new Array<Block>();
+	private WorldRenderer renderer;
 	
-	public MinerController(World world) {
+	public MinerController(World world, WorldRenderer renderer) {
 		this.world = world;
 		this.miner = world.getMiner();
+		this.renderer = renderer;
 	}
 
 
@@ -53,6 +63,7 @@ public class MinerController {
 	public void update(float delta) {
 		// Processing the input - setting the states of Bob
 		processInput();
+		
 		
 		
 		// Setting initial vertical acceleration 
@@ -156,6 +167,27 @@ public class MinerController {
 		// reset the collision box's position on Y
 		minerRect.y = miner.getPosition().y;
 		
+		if(miner.getPosition().x < 5.1) {
+			if(yPerc < .50) {
+				miner.getVelocity().x = 0;
+			}
+		}
+		if(miner.getPosition().x > 44.5) {
+			if(yPerc > .50) {
+				miner.getVelocity().x = 0;
+			}
+		}
+		if(minerRect.overlaps(renderer.getShopSprite().getBoundingRectangle()) ){
+			if(shopSignVis) {
+				
+			}else {
+				shopSignVis = true;
+				renderer.showShopSign();
+			}
+		} else {
+			shopSignVis = false;
+			renderer.hideShopSign();
+		}
 		// update Bob's position
 		miner.getPosition().add(miner.getVelocity());
 		miner.getBounds().x = miner.getPosition().x;

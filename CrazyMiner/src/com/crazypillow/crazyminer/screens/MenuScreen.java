@@ -22,7 +22,7 @@ import com.badlogic.gdx.utils.XmlReader.Element;
 public class MenuScreen implements Screen{
 	
 	public enum Menu {
-		MAIN, LOAD, SETTINGS
+		MAIN, LOAD, SETTINGS, SELECT
 	}
 
 	
@@ -33,6 +33,10 @@ public class MenuScreen implements Screen{
 	private Skin skin;
 	private FileHandle handle;
 	private String saveName;
+	private String worldName;
+	private FileHandle world1;
+	private FileHandle world2;
+	private FileHandle world3;
 	
 	
 	/**
@@ -65,8 +69,7 @@ public class MenuScreen implements Screen{
 			 createMainMenu();
 			 break;
 		 case LOAD:
-			 handle = Gdx.files.local("saves.xml");
-			 createLoadGameMenu(handle);
+			showWorlds(false);
 			 break;
 		 case SETTINGS:
 			 createSettingsMenu();
@@ -76,39 +79,125 @@ public class MenuScreen implements Screen{
 			 break;
 		 }
 	}
+	private void showWorlds(final boolean newWorld) {
+		table.clear();
+		addOptions();
+		world1 = Gdx.files.local("world1.xml");
+		world2 = Gdx.files.local("world2.xml");
+		world3 = Gdx.files.local("world3.xml");
+		if(newWorld) {
+			table.add("Select Save Spot").center();
+			table.row();
+			table.add("(Note: Previous games will be overwrittern)").center();
+			table.row();
+		}else {
+			table.add("Select Save: ").center();
+			table.row();
+		}
+			TextButton world1Button = new TextButton("World  1",  getSkin());
+			world1Button.addListener(new ClickListener() {
+	        	@Override
+	        	public void clicked(InputEvent event, float x, float y) {
+	        		FileHandle h = Gdx.files.local("world1.xml");
+	        		game.setScreen(new GameScreen(game, h, newWorld));
+	        	}
+	        });
+			TextButton world2Button = new TextButton("World  2",  getSkin());
+			world2Button.addListener(new ClickListener() {
+	        	@Override
+	        	public void clicked(InputEvent event, float x, float y) {
+	        		FileHandle h = Gdx.files.local("world2.xml");
+	        		game.setScreen(new GameScreen(game, h, newWorld));
+	        	}
+	        });
+			TextButton world3Button = new TextButton("World  3",  getSkin());
+			world3Button.addListener(new ClickListener() {
+	        	@Override
+	        	public void clicked(InputEvent event, float x, float y) {
+	        		FileHandle h = Gdx.files.local("world3.xml");
+	        		game.setScreen(new GameScreen(game, h, newWorld));
+	        	}
+	        });
+			if(!newWorld) {
+				if(world1.exists()) {
+					table.add(world1Button).size(300, 60).center();
+					table.row();
+				}
+				if(world2.exists()) {
+					table.add(world2Button).size(300, 60).center();
+					table.row();
+				}
+				if(world3.exists()) {
+					table.add(world3Button).size(300, 60).center();
+					table.row();
+				}
+			}else {
+				table.add(world1Button).size(300, 60).center();
+				table.row();
+				table.add(world2Button).size(300, 60).center();
+				table.row();
+				table.add(world3Button).size(300, 60).center();
+				table.row();
+			}
+		
+		
+	}
+	private void addOptions() {
+		TextButton mainMenu = new TextButton("Main Menu",  getSkin());
+		mainMenu.addListener(new ClickListener() {
+        	@Override
+        	public void clicked(InputEvent event, float x, float y) {
+        		game.setScreen(new MenuScreen(game));
+        	}
+        });
+		table.add(mainMenu).size(100, 60).left();
+		table.row();
+		
+	}
 	private void createSettingsMenu() {
 		// TODO Auto-generated method stub
 		
 	}
-	private void createLoadGameMenu(FileHandle handle) {
+	/*private void createLoadGameMenu(FileHandle handle) {
+		table.clear();
 		table.add("Select Save: ").center();
 		table.row();
-		XmlReader xml = new XmlReader();
-		try {
-			XmlReader.Element xml_element = xml.parse(handle);
-			Iterator<Element> iterator_save = xml_element.getChildrenByName("save").iterator();
-			while(iterator_save.hasNext()) {
-				XmlReader.Element save = (XmlReader.Element)iterator_save.next();
-				saveName = save.getChildByName("name").getText();
-				TextButton saveButton = new TextButton(saveName, getSkin());
-				saveButton.addListener(new ClickListener() {
-		        	@Override
-		        	public void clicked(InputEvent event, float x, float y) {
-		        		FileHandle h = Gdx.files.local(saveName);
-		        		game.setScreen(new GameScreen(game, h));
-		        	}
-		        });
-				table.add(saveButton).size(300, 60).center();
-				table.row();
-			}
-				
-		} catch (IOException e1) {
-				e1.printStackTrace();
-		}
+		TextButton world1Button = new TextButton("World  1",  getSkin());
+		world1Button.addListener(new ClickListener() {
+        	@Override
+        	public void clicked(InputEvent event, float x, float y) {
+        		FileHandle h = Gdx.files.local("world1.xml");
+        		game.setScreen(new GameScreen(game, h, false));
+        	}
+        });
+		TextButton world2Button = new TextButton("World  2",  getSkin());
+		world2Button.addListener(new ClickListener() {
+        	@Override
+        	public void clicked(InputEvent event, float x, float y) {
+        		FileHandle h = Gdx.files.local("world2.xml");
+        		game.setScreen(new GameScreen(game, h, false));
+        	}
+        });
+		TextButton world3Button = new TextButton("World  3",  getSkin());
+		world3Button.addListener(new ClickListener() {
+        	@Override
+        	public void clicked(InputEvent event, float x, float y) {
+        		FileHandle h = Gdx.files.local("world3.xml");
+        		game.setScreen(new GameScreen(game, h, false));
+        	}
+        });
+		
+		table.add(world1Button).size(300, 60).center();
+		table.row();
+		table.add(world2Button).size(300, 60).center();
+		table.row();
+		table.add(world3Button).size(300, 60).center();
+		table.row();
 			
 		
-	}
+	}*/
 	public void createMainMenu() {
+		table.clear();
 		table.add("Crazy Miner").center();
 		table.row();
 		
@@ -116,7 +205,7 @@ public class MenuScreen implements Screen{
         newGameButton.addListener(new ClickListener() {
         	@Override
         	public void clicked(InputEvent event, float x, float y) {
-        		game.setScreen(new GameScreen(game));
+        		showWorlds(true);
         	}
         });
         table.add(newGameButton).size(300, 60).center();
@@ -125,7 +214,7 @@ public class MenuScreen implements Screen{
         loadGameButton.addListener(new ClickListener() {
         	@Override
         	public void clicked(InputEvent event, float x, float y) {
-        		game.setScreen(new MenuScreen(game, Menu.LOAD));
+        		showWorlds(false);
         	}
         });
         table.add(loadGameButton).size(300, 60).center();

@@ -12,6 +12,7 @@ public class Miner {
 	}
 	
 	
+	
 	public static final float SIZE = 0.50f; // half a unit
 
 	Vector2 	position = new Vector2();
@@ -21,6 +22,7 @@ public class Miner {
 	State		state = State.IDLE; 
 	boolean		facingLeft = true;
 	boolean 	dead = false;
+	boolean 	pauseEnergyTick = false;
 	int energy;
 	int money;
 	int armor;
@@ -44,7 +46,9 @@ public class Miner {
 		this.money = money;
 		this.armor = armor;
 	}
-	
+	public void stopMoving() {
+		getVelocity().x = 0;
+	}
 	
 	public int getEnergy() {
 		return energy;
@@ -156,11 +160,21 @@ public class Miner {
 			if(energy <= 0) {
 				dead = true;
 			}else {
-				energy -= 1;
-				lastEnergyTick = System.currentTimeMillis();
+				if(pauseEnergyTick) {
+					
+				}else {
+					energy -= 1;
+					lastEnergyTick = System.currentTimeMillis();
+				}
 			}
 		}
 	
+	}
+	public boolean isPauseEnergyTick() {
+		return pauseEnergyTick;
+	}
+	public void setPauseEnergyTick(boolean pauseEnergyTick) {
+		this.pauseEnergyTick = pauseEnergyTick;
 	}
 	
 }

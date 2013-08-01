@@ -1,19 +1,28 @@
 package com.crazypillow.crazyminer.model;
-
+/*
+ * TODO: Make loading and saving of world faster, do once game released though, as it works fine how it is.
+ * 
+ * 
+ */
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlWriter;
 import com.badlogic.gdx.utils.XmlReader.Element;
+import com.crazypillow.crazyminer.screens.GameScreen;
 
 
 public class World {
@@ -83,12 +92,50 @@ public class World {
 	public World(FileHandle handle) {
 		this.handle = handle;
 		if(handle.exists()) {
-			//createWorld(handle);
 			loadWorld(handle);
 		}else {
 			try {
 				System.out.println("creating the file");
 				handle.file().createNewFile(); //Creates new File
+				/*FileHandle saveFile = Gdx.files.local("saves.xml");
+				List<String> saveNames = new ArrayList<String>();
+				
+				XmlReader xmlReader = new XmlReader();
+				try {
+					XmlReader.Element xml_element = xmlReader.parse(saveFile);
+					Iterator<Element> iterator_save = xml_element.getChildrenByName("save").iterator();
+					while(iterator_save.hasNext()) {
+						XmlReader.Element save = (XmlReader.Element)iterator_save.next();
+						saveNames.add(save.getChildByName("name").getText());
+					}
+						
+				} catch (IOException e1) {
+						e1.printStackTrace();
+				}
+
+				StringWriter saveWriter = new StringWriter();
+				XmlWriter saveXml = new XmlWriter(saveWriter);
+			
+				try {
+					saveXml.element("saves");
+						for(String s : saveNames) {
+							saveXml.element("save");
+							saveXml.element("name");
+								saveXml.text(s);
+							saveXml.pop();
+							saveXml.pop();
+						}
+						saveXml.element("save");
+						saveXml.element("name");
+							saveXml.text(handle.name());
+						saveXml.pop();
+						saveXml.pop();
+						saveXml.pop();
+				}catch (IOException e) {
+						e.printStackTrace();
+				}
+				
+				saveFile.writeString(saveWriter.toString(), false);*/
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -207,6 +254,8 @@ public class World {
 	 * @param handle file to save to (Will overwrite everything)
 	 */
 	public void saveWorld(FileHandle handle) {
+		
+		
 		StringWriter writer = new StringWriter();
 		XmlWriter xml = new XmlWriter(writer);
 		try {
@@ -359,7 +408,7 @@ public class World {
 			xml.pop();
 			
 			handle.writeString(writer.toString(), false);
-			System.out.println("Saved world");
+			System.out.println("Saved world" + handle.name());
 			
 		} catch (IOException e) {
 			e.printStackTrace();
