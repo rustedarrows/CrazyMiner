@@ -294,6 +294,16 @@ public class World {
 					.element("money")
 						.text(miner.money)
 					.pop()
+					.element("fuelUpgrade")
+						.text(miner.fuelUpgrade)
+					.pop()
+					.element("engineUpgrade")
+						.text(miner.engineUpgrade)
+					.pop()
+					.element("drillUpgrade")
+						.text(miner.drillUpgrade)
+					.pop()
+					
 				.pop();
 				//Dirt Block
 				xml.element("block")

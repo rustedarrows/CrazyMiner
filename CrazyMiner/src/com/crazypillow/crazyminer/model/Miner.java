@@ -67,6 +67,9 @@ public class Miner {
 		this.fuelUpgrade = fuelUpgrade;
 		this.drillUpgrade = drillUpgrade;
 		this.drillStrength = drillUpgrade + 1;
+		this.engineUpgrade = engineUpgrade;
+		this.ACCELERATION = 20f + engineUpgrade;
+		this.MAX_VEL = ACCELERATION / 2;
 	}
 	public void stopMoving() {
 		getVelocity().x = 0;

@@ -55,12 +55,12 @@ public class Shop extends Actor{
         	}
         });
         
-        final TextButton refuel = new TextButton("Refuel Cost: " + ((100 + miner.getFuelUpgrade()*5) -  miner.getEnergy()), renderer.getSkin());
+        final TextButton refuel = new TextButton("Refuel Cost: " + ((100 + miner.getFuelUpgrade()*10) -  miner.getEnergy()), renderer.getSkin());
         refuel.addListener(new ClickListener() {
         	@Override
         	public void clicked(InputEvent event, float x, float y) {
         		miner.reEnergize();
-        		refuel.setText("Refuel Cost: " + ((100 + miner.getFuelUpgrade()*5) -  miner.getEnergy()));
+        		refuel.setText("Refuel Cost: " + ((100 + miner.getFuelUpgrade()*10) -  miner.getEnergy()));
         	}
         });
         final TextButton armor = new TextButton("Upgrade Armor ", renderer.getSkin());
