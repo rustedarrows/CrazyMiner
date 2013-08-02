@@ -11,7 +11,11 @@ public class Miner {
 		IDLE, MOVING, MINING
 	}
 	
-	
+	public static float ACCELERATION 	= 20f;
+	public static float GRAVITY 			= -20f;
+	public static final float MAX_VERTICAL_VELOCITY	= 7f;
+	public static final float DAMP 			= 0.90f;
+	public static float MAX_VEL 			= 10f;
 	
 	public static final float SIZE = 0.50f; // half a unit
 
@@ -23,10 +27,14 @@ public class Miner {
 	boolean		facingLeft = true;
 	boolean 	dead = false;
 	boolean 	pauseEnergyTick = false;
+	int engineUpgrade, armorUpgrade, fuelUpgrade, drillUpgrade;
 	int energy;
+	int maxEnergy = 100;
 	int money;
 	int armor;
-	float energyTick = 500l; //Rate at which the energy decreases
+	int drillStrength = 1;
+	int maxArmor = 100;
+	float energyTick = 1000l; //Rate at which the energy decreases
 	long lastEnergyTick;
 
 	public Miner(Vector2 position) {
@@ -46,6 +54,20 @@ public class Miner {
 		this.money = money;
 		this.armor = armor;
 	}
+	public Miner(Vector2 position, int energy, int money, int armor, int fuelUpgrade, int drillUpgrade, int engineUpgrade) {
+		this.position = position;
+		this.bounds.x = position.x;
+		this.bounds.y = position.y;
+		this.bounds.height = SIZE;
+		this.bounds.width = SIZE;
+		this.energy = energy;
+		this.maxEnergy = 100 + fuelUpgrade*5;
+		this.money = money;
+		this.armor = armor;
+		this.fuelUpgrade = fuelUpgrade;
+		this.drillUpgrade = drillUpgrade;
+		this.drillStrength = drillUpgrade + 1;
+	}
 	public void stopMoving() {
 		getVelocity().x = 0;
 	}
@@ -57,7 +79,10 @@ public class Miner {
 		this.energy = energy;
 	}
 	public void reEnergize() {
-		energy = 100;
+		energy = maxEnergy;
+	}
+	public void repair() {
+		this.armor = maxArmor;
 	}
 	public void changeTick(float tick) {
 		this.energyTick = tick;
@@ -170,11 +195,43 @@ public class Miner {
 		}
 	
 	}
+	public int getEngineUpgrade() {
+		return engineUpgrade;
+	}
+	public int getArmorUpgrade() {
+		return armorUpgrade;
+	}
+	public int getFuelUpgrade() {
+		return fuelUpgrade;
+	}
 	public boolean isPauseEnergyTick() {
 		return pauseEnergyTick;
 	}
 	public void setPauseEnergyTick(boolean pauseEnergyTick) {
 		this.pauseEnergyTick = pauseEnergyTick;
 	}
+	public void upgradeEngine() {
+		engineUpgrade++;
+		this.ACCELERATION = 20f + engineUpgrade;
+		this.MAX_VEL = ACCELERATION / 2;
+	}
+	public void upgradeDrill() {
+		drillStrength++;
+		drillUpgrade++;
+	}
+	public void upgradeArmor() {
+		armorUpgrade++;
+		maxArmor += 10;
+	}
 	
+	public void upgradeFuel() {
+		fuelUpgrade++;
+		maxEnergy += 10;
+	}
+	public int getDrillStrength() {
+		return drillStrength;
+	}
+	public int getDrillUpgrade() {
+		return drillUpgrade;
+	}
 }

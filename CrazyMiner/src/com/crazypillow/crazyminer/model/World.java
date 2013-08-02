@@ -39,6 +39,8 @@ public class World {
 	//---------Used for Map Creating and generation
 	private int x, y, energy, money, armor;
 	private int durability, price;
+	private int maxEnergy, maxArmor;
+	private int fuelUpgrade, engineUpgrade, drillUpgrade;
 	private String type;
 	private BlockType blockType;
 	//---------END------
@@ -169,7 +171,13 @@ public class World {
 			money = Integer.parseInt(e2.getText());
 			e2 = e.getChildByName("armor");
 			armor = Integer.parseInt(e2.getText());
-			miner = new Miner(new Vector2(x, y), energy, money, armor);
+			e2 = e.getChildByName("fuelUpgrade");
+			fuelUpgrade = Integer.parseInt(e2.getText());
+			e2 = e.getChildByName("drillUpgrade");
+			drillUpgrade = Integer.parseInt(e2.getText());
+			e2 = e.getChildByName("engineUpgrade");
+			engineUpgrade = Integer.parseInt(e2.getText());
+			miner = new Miner(new Vector2(x, y), energy, money, armor, fuelUpgrade, drillUpgrade, engineUpgrade);
 			//------END LOAD PLAYER-------
 			
 			Iterator<Element> iterator_block = xml_element.getChildrenByName("block").iterator();
@@ -211,6 +219,10 @@ public class World {
 	public void createWorld(FileHandle handle) {
 		miner = new Miner(new Vector2(10, 1001), 100, 0, 100);
 		blocks = new Block[width][height];
+		miner.upgradeArmor();
+		miner.upgradeFuel();
+		miner.upgradeEngine();
+		miner.upgradeDrill();
 		for(int col = 0; col < width; col++) {
 			for(int row = 0; row < height; row++) {
 				int i = MathUtils.random(4);

@@ -23,12 +23,10 @@ public class MinerController {
 	
 	private boolean shopSignVis = false;
 	
-	private static final float ACCELERATION 	= 20f;
-	private static final float GRAVITY 			= -20f;
-	private static final float MAX_VERTICAL_VELOCITY	= 7f;
-	private static final float DAMP 			= 0.90f;
-	private static final float MAX_VEL 			= 10f;
 	
+	
+
+
 	private Table table;
 	private World 	world;
 	private Miner 	miner;
@@ -67,7 +65,7 @@ public class MinerController {
 		
 		
 		// Setting initial vertical acceleration 
-		miner.getAcceleration().y = GRAVITY;
+		miner.getAcceleration().y = miner.GRAVITY;
 		
 		// Convert acceleration to frame time
 		miner.getAcceleration().scl(delta);
@@ -79,14 +77,14 @@ public class MinerController {
 		checkCollisionWithBlocks(delta);
 
 		// apply damping to halt Bob nicely 
-		miner.getVelocity().x *= DAMP;
+		miner.getVelocity().x *= miner.DAMP;
 		
 		// ensure terminal velocity is not exceeded
-		if (miner.getVelocity().x > MAX_VEL) {
-			miner.getVelocity().x = MAX_VEL;
+		if (miner.getVelocity().x > miner.MAX_VEL) {
+			miner.getVelocity().x = miner.MAX_VEL;
 		}
-		if (miner.getVelocity().x < -MAX_VEL) {
-			miner.getVelocity().x = -MAX_VEL;
+		if (miner.getVelocity().x < -miner.MAX_VEL) {
+			miner.getVelocity().x = -miner.MAX_VEL;
 		}
 		
 		// update energy drain
@@ -213,10 +211,11 @@ public class MinerController {
 		if((xPerc == 0 && yPerc == 0)) {
 			//Do Not mine the blocks, as we aren't actually moving
 			}else {
-				block.mine(); 
+				block.mine(miner.getDrillStrength()); 
 				if(block.getMined() > block.getDurability()) {
 					miner.addMoney(block.getValue());
 					world.setNull((int)block.getBounds().x, (int)block.getBounds().y);
+					miner.setEnergy(miner.getEnergy() - 1);
 				
 				}
 			}
@@ -232,25 +231,26 @@ public class MinerController {
 			}
 			if(yPerc > 0) {
 				if(xPerc < 0) {
-					miner.getVelocity().y = MAX_VERTICAL_VELOCITY*xPerc;
+					miner.getVelocity().y = miner.MAX_VERTICAL_VELOCITY*xPerc;
 				}else if(xPerc > 0) {
-					miner.getVelocity().y = MAX_VERTICAL_VELOCITY*xPerc;
+					miner.getVelocity().y = miner.MAX_VERTICAL_VELOCITY*xPerc;
 				}
-				miner.getAcceleration().x = ACCELERATION*yPerc;
+				miner.getAcceleration().x = miner.ACCELERATION*yPerc;
 			}
 			if(yPerc < 0) {
 				if(xPerc < 0) {
-					miner.getVelocity().y = MAX_VERTICAL_VELOCITY*xPerc;
+					miner.getVelocity().y = miner.MAX_VERTICAL_VELOCITY*xPerc;
 				}else if(xPerc > 0) {
-					miner.getVelocity().y = MAX_VERTICAL_VELOCITY*xPerc;
+					miner.getVelocity().y = miner.MAX_VERTICAL_VELOCITY*xPerc;
 				}else {
 					
 				}
-				miner.getAcceleration().x = ACCELERATION*yPerc;
+				miner.getAcceleration().x = miner.ACCELERATION*yPerc;
 			}
 		
 		
 		return false;
 	}
+
 
 }

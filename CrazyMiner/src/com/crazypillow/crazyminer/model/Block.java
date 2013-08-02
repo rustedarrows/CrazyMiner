@@ -44,9 +44,8 @@ public class Block {
 		return bounds;
 	}
 	
-	public void mine() {
-		//TODO: Add paramater to allow for different strength drills to "drill" quicker
-		touch++;
+	public void mine(int strength) {
+		touch += strength;
 	}
 	public int getMined() {
 		return touch;

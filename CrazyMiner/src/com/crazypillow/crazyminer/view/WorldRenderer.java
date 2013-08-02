@@ -71,7 +71,7 @@ public class WorldRenderer {
 	private int width;
 	private int height;
 	
-	Miner miner;
+	public Miner miner;
 	
 	public void setSize (int w, int h) {
 		this.width = w;
@@ -129,7 +129,7 @@ public class WorldRenderer {
         
         shop = new Texture(Gdx.files.internal("store.png"));
         shopSprite = new Sprite(shop);
-        shopSprite.setBounds(15, 1000, 4f, 4f);
+        shopSprite.setBounds(5, 1000, 4f, 4f);
         Gdx.input.setInputProcessor(stage);
 		
 	}
@@ -159,6 +159,10 @@ public class WorldRenderer {
 			drawMiner();
 		spriteBatch.end();
 		stage.draw();
+		if(table != null) {
+		//table.debug();
+		//table.drawDebug(stage);
+		}
 	}
 	public Sprite getShopSprite() {
 		return shopSprite;
@@ -283,7 +287,7 @@ public class WorldRenderer {
      */
 	public void showShop() {
 		if(!stage.getActors().contains(shopActor, false)) {
-			shopActor = new Shop(this);
+			shopActor = new Shop(this, miner);
 			stage.addActor(shopActor);
 		}
 		
