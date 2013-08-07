@@ -215,8 +215,6 @@ public class Shop extends Actor{
 		table.add(fuelSize);
 		table.row();
 		table.add(back);
-		table.row();
-		table.add(exit);
 	}
 	public void showRefuel() {
 		table.clear();
@@ -234,8 +232,6 @@ public class Shop extends Actor{
 		table.add(fullRefuel);
 		table.row();
 		table.add(back);
-		table.row();
-		table.add(exit);
 	}
 
 
