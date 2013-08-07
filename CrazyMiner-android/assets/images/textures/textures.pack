@@ -3,6 +3,34 @@ textures.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+miner-down
+  rotate: false
+  xy: 1, 35
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+miner-left
+  rotate: false
+  xy: 67, 35
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+miner-right
+  rotate: false
+  xy: 133, 35
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+miner-up
+  rotate: false
+  xy: 199, 35
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 block-bronze
   rotate: false
   xy: 1, 1
@@ -12,56 +40,28 @@ block-bronze
   index: -1
 block-diamond
   rotate: false
-  xy: 35, 1
+  xy: 265, 67
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 block-gold
   rotate: false
-  xy: 69, 1
+  xy: 35, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 block-silver
   rotate: false
-  xy: 103, 1
+  xy: 299, 67
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 block
   rotate: false
-  xy: 137, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-miner-down
-  rotate: false
-  xy: 171, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-miner-left
-  rotate: false
-  xy: 205, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-miner-right
-  rotate: false
-  xy: 239, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-miner-up
-  rotate: false
-  xy: 273, 1
+  xy: 69, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

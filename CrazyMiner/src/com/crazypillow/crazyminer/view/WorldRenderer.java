@@ -121,7 +121,7 @@ public class WorldRenderer {
         //Create new TouchPad with the created style
         touchpad = new Touchpad(5, touchpadStyle);
         //setBounds(x,y,width,height)
-        touchpad.setBounds(15, 15, 128, 128);
+        touchpad.setBounds(15, 15, Gdx.graphics.getWidth() / 4, Gdx.graphics.getWidth() / 4);
 
         //Create a Stage and add TouchPad
         stage.addActor(touchpad);   
@@ -310,6 +310,9 @@ public class WorldRenderer {
 				shopButton = new ShopButton(this);
 				stage.addActor(shopButton);
 		}
+	}
+	public boolean isShopOpen() {
+		return stage.getActors().contains(shopActor, false);
 	}
 	/**
 	 * Hides the Shop Screen Button

@@ -186,6 +186,10 @@ public class MinerController {
 			shopSignVis = false;
 			renderer.hideShopSign();
 		}
+		if(renderer.isShopOpen()) {
+			miner.getVelocity().x = 0;
+			miner.getVelocity().y = 0;
+		}
 		// update Bob's position
 		miner.getPosition().add(miner.getVelocity());
 		miner.getBounds().x = miner.getPosition().x;

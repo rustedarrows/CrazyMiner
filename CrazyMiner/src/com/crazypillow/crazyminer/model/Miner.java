@@ -17,7 +17,7 @@ public class Miner {
 	public static final float DAMP 			= 0.90f;
 	public static float MAX_VEL 			= 10f;
 	
-	public static final float SIZE = 0.50f; // half a unit
+	public static final float SIZE = 0.75f; // half a unit
 
 	Vector2 	position = new Vector2();
 	Vector2 	acceleration = new Vector2();
@@ -84,6 +84,12 @@ public class Miner {
 	public void reEnergize() {
 		energy = maxEnergy;
 	}
+	public void reEnergize(int i) {
+		energy += i;
+		if(energy > maxEnergy) {
+			energy = maxEnergy;
+		}
+	}
 	public void repair() {
 		this.armor = maxArmor;
 	}
@@ -97,7 +103,7 @@ public class Miner {
 		this.money = money;
 	}
 	/**
-	 * Adds specified amount to money of Miner
+	 * Adds specified amount to money of the Miner
 	 * @param amount the amount to add to the current cash pile
 	 */
 	public void addMoney(int amount) {
@@ -213,23 +219,43 @@ public class Miner {
 	public void setPauseEnergyTick(boolean pauseEnergyTick) {
 		this.pauseEnergyTick = pauseEnergyTick;
 	}
-	public void upgradeEngine() {
-		engineUpgrade++;
-		this.ACCELERATION = 20f + engineUpgrade;
-		this.MAX_VEL = ACCELERATION / 2;
+	public boolean upgradeEngine(int cost) {
+		if(cost < money) {
+			money -= cost;
+			engineUpgrade++;
+			this.ACCELERATION = 20f + engineUpgrade;
+			this.MAX_VEL = ACCELERATION / 2;
+			return true;
+		}else {
+			return false;
+		}
+		
 	}
-	public void upgradeDrill() {
-		drillStrength++;
-		drillUpgrade++;
+	public boolean upgradeDrill(int cost) {
+		if(cost < money) {
+			this.money -= cost;
+			drillStrength++;
+			drillUpgrade++;
+			return true;
+		}else {
+			return false;
+		}
 	}
 	public void upgradeArmor() {
 		armorUpgrade++;
 		maxArmor += 10;
 	}
 	
-	public void upgradeFuel() {
-		fuelUpgrade++;
-		maxEnergy += 10;
+	public boolean upgradeFuel(int cost) {
+		if(cost < money) {
+			this.money -= cost;
+			fuelUpgrade++;
+			maxEnergy += 10;
+			return true;
+		}else {
+			return false;
+		}
+		
 	}
 	public int getDrillStrength() {
 		return drillStrength;

@@ -219,42 +219,29 @@ public class World {
 	public void createWorld(FileHandle handle) {
 		miner = new Miner(new Vector2(10, 1001), 100, 0, 100);
 		blocks = new Block[width][height];
-		miner.upgradeArmor();
-		miner.upgradeFuel();
-		miner.upgradeEngine();
-		miner.upgradeDrill();
+		miner.setMoney(100);
+		//miner.upgradeArmor(0);
+		miner.upgradeFuel(0);
+		miner.upgradeEngine(0);
+		miner.upgradeDrill(0);
 		for(int col = 0; col < width; col++) {
 			for(int row = 0; row < height; row++) {
-				int i = MathUtils.random(4);
+				int i = MathUtils.random(1000);
 				BlockType type;
-				
-				switch(i) {
-				case 0: //Dirt
+				if(i < 650) {
 					type = BlockType.DIRT;
-					//blocks[col][row] = new Block(new Vector2(col, row), BlockType.DIRT, BlockType.DIRT.getDurability(), BlockType.DIRT.getValue());
-					break;
-				case 1: //Bronze
+				}else if(i < 775) {
 					type = BlockType.BRONZE;
-					//blocks[col][row] = new Block(new Vector2(col, row), BlockType.BRONZE, BlockType.BRONZE.getDurability(), BlockType.BRONZE.getValue());
-					break;
-				case 2: //Silver
+				}else if(i < 850) {
 					type = BlockType.SILVER;
-					//blocks[col][row] = new Block(new Vector2(col, row), BlockType.SILVER, BlockType.SILVER.getDurability(), BlockType.SILVER.getValue());
-					break;
-				case 3: //Gold
+				}else if(i < 975) {
 					type = BlockType.GOLD;
-					//blocks[col][row] = new Block(new Vector2(col, row), BlockType.GOLD, BlockType.GOLD.getDurability(), BlockType.GOLD.getValue());
-					break;
-				case 4: //Diamond
+				}else if(i < 1000) {
 					type = BlockType.DIAMOND;
-					//blocks[col][row] = new Block(new Vector2(col, row), BlockType.DIAMOND, BlockType.DIAMOND.getDurability(), BlockType.DIAMOND.getValue());
-					break;
-				default: //Dirt
+				}else {
 					type = BlockType.DIRT;
-					//blocks[col][row] = new Block(new Vector2(col, row), BlockType.DIRT, BlockType.DIRT.getDurability(), BlockType.DIRT.getValue());
-					break;
-
 				}
+				
 				blocks[col][row] = new Block(new Vector2(col, row), type, type.getDurability(), type.getValue());
 			}
 		}

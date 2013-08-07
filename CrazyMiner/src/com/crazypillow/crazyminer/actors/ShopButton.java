@@ -33,7 +33,7 @@ public class ShopButton extends Actor{
         		shopButton.clearActions();
         	}
         });
-        table.add(shopButton).size(60, 60).center();
+        table.add(shopButton).size(Gdx.graphics.getWidth() / 5, Gdx.graphics.getWidth() / 5).center();
 
     }
 }

@@ -1,5 +1,6 @@
 package com.crazypillow.crazyminer.screens;
 
+import com.crazypillow.crazyminer.CrazyMiner;
 import  com.crazypillow.crazyminer.controller.MinerController;
 import  com.crazypillow.crazyminer.model.World;
 import  com.crazypillow.crazyminer.view.WorldRenderer;
@@ -7,6 +8,7 @@ import  com.crazypillow.crazyminer.view.WorldRenderer;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
@@ -44,7 +46,9 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
+		if(Gdx.input.isKeyPressed(Keys.BACK)) {
+			((CrazyMiner) game).showMainMenu();
+		}
 		controller.update(delta);
 		renderer.render(delta);
 		fps.log();

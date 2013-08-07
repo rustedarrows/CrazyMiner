@@ -118,25 +118,27 @@ public class MenuScreen implements Screen{
 	        		game.setScreen(new GameScreen(game, h, newWorld));
 	        	}
 	        });
+			table.defaults().size(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 5);
 			if(!newWorld) {
+				
 				if(world1.exists()) {
-					table.add(world1Button).size(300, 60).center();
+					table.add(world1Button).center();
 					table.row();
 				}
 				if(world2.exists()) {
-					table.add(world2Button).size(300, 60).center();
+					table.add(world2Button).center();
 					table.row();
 				}
 				if(world3.exists()) {
-					table.add(world3Button).size(300, 60).center();
+					table.add(world3Button).center();
 					table.row();
 				}
 			}else {
-				table.add(world1Button).size(300, 60).center();
+				table.add(world1Button).center();
 				table.row();
-				table.add(world2Button).size(300, 60).center();
+				table.add(world2Button).center();
 				table.row();
-				table.add(world3Button).size(300, 60).center();
+				table.add(world3Button).center();
 				table.row();
 			}
 		
@@ -150,7 +152,7 @@ public class MenuScreen implements Screen{
         		game.setScreen(new MenuScreen(game));
         	}
         });
-		table.add(mainMenu).size(100, 60).left();
+		table.add(mainMenu).size(Gdx.graphics.getWidth() / 5, Gdx.graphics.getHeight() / 10).left();
 		table.row();
 		
 	}
@@ -197,6 +199,8 @@ public class MenuScreen implements Screen{
 		
 	}*/
 	public void createMainMenu() {
+		int width = Gdx.graphics.getWidth();
+		int height = Gdx.graphics.getHeight();
 		table.clear();
 		table.add("Crazy Miner").center();
 		table.row();
@@ -208,7 +212,7 @@ public class MenuScreen implements Screen{
         		showWorlds(true);
         	}
         });
-        table.add(newGameButton).size(300, 60).center();
+        table.add(newGameButton).size(width / 2, height / 5).center();
         table.row();
         TextButton loadGameButton = new TextButton("Load Game", getSkin());
         loadGameButton.addListener(new ClickListener() {
@@ -217,7 +221,7 @@ public class MenuScreen implements Screen{
         		showWorlds(false);
         	}
         });
-        table.add(loadGameButton).size(300, 60).center();
+        table.add(loadGameButton).size(width / 2, height / 5).center();
         table.row();
 	}
 	@Override
