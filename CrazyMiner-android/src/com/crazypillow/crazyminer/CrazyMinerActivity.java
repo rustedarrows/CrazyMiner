@@ -16,7 +16,7 @@ public class CrazyMinerActivity extends AndroidApplication {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+        //TEST
         // Create the layout
         RelativeLayout layout = new RelativeLayout(this);
 
